@@ -1,11 +1,12 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { supabase } from "../helpers/supabaseClient";
-import usePersonaStore from "../stores/personaStore";
 import { Button, Form, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../components/Icons";
 import { PublicRoutes } from "../models/Routes";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePersonByEmail } from "../services/queries";
+import { usePersonStoreFill } from "../stores/personStoreFill";
 
 export default function LogIn() {
 	const emailRE = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -14,75 +15,45 @@ export default function LogIn() {
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
-	const {
-		updateId,
-		updateNombre,
-		updateApodo,
-		updateFechaNacimiento,
-		updateEmail,
-		updateTipo,
-		updateEstado,
-		updateBanHasta,
-	} = usePersonaStore();
-
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const navigate = useNavigate();
-	const [res, setRes] = useState<number>(-1);
-	const [err, setErr] = useState<any>(false);
+
+	const queryClient = useQueryClient();
+	const [email, setEmail] = useState<string | null>(null);
+	const personByEmailQuery = usePersonByEmail(email ?? "");
+
 
 	useEffect(() => {
-		if (res === 200 && err === null) {
+		if (personByEmailQuery.data && !personByEmailQuery.isPending) {
+			usePersonStoreFill(personByEmailQuery.data.items);
 			navigate(PublicRoutes.MESAS)
 		}
-		if (res === 400 && err.status === 422) {
-			onOpen()
+		else if (personByEmailQuery.error) {
+			onOpen(); // Open modal on error
 		}
-	}, [res, err, navigate]);
+	}, [personByEmailQuery.data, personByEmailQuery.error, personByEmailQuery.isPending]);
 
 	async function onSubmit(e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) {
 		e.preventDefault();
-		const info = Object.fromEntries(new FormData(e.currentTarget));
+		const formData = Object.fromEntries(new FormData(e.currentTarget));
 
 		try {
 			const { data, error } = await supabase.auth.signInWithPassword({
-				email: info.email.toString(),
-				password: info.contrasena.toString(),
+				email: formData.email.toString(),
+				password: formData.contrasena.toString(),
 			})
 
 			console.log("Data: ", data);
 			console.log("Error1: ", error);
-			setErr(error);
+			// setErr(error);
 		}
 		catch (error) {
 			console.log("Error2: ", error);
 		}
 
-		try {
-			await axios.get(`http://localhost:3000/persona/email/${info.email.toString()}`)
-				.then(response => {
-					setRes(response.status);
-					if (response.status === 200) {
-						const user = response.data.items;
-						//Store in Zustand
-						updateId(user.idPersona);
-						updateNombre(user.nombre);
-						updateApodo(user.apodo);
-						updateFechaNacimiento(user.fechaNacimiento);
-						updateEmail(user.email);
-						updateTipo(user.tipo);
-						updateEstado(user.estado);
-						updateBanHasta(user.banHasta);
-					}
-				})
-				.catch((error) => {
-					setRes(error.status);
-					console.error('Error posting data:', error);
-				});
-
-		} catch (error) {
-			console.log("Response Axios error: ", error);
-		};
+		setEmail(formData.email.toString());
+		queryClient.invalidateQueries({ queryKey: ["personByEmail", formData.email.toString()] });
 	};
 
 	return (
@@ -106,7 +77,6 @@ export default function LogIn() {
 				<Input
 					className="max-w-xs"
 					isRequired
-					isClearable
 					label="Contrasena"
 					labelPlacement="outside"
 					name="contrasena"
