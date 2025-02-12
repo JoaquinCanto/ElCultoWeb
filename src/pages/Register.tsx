@@ -1,64 +1,48 @@
-
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PublicRoutes } from "../models/Routes";
 import { supabase } from "../helpers/supabaseClient";
-import usePersonaStore from "../stores/personaStore";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../components/Icons";
 import { Form, Input, Button, DatePicker, Link, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
+import { useCreatePerson } from "../services/mutations";
 
 export default function Register() {
 	const emailRE = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 	const contrasenaRE = /^(?=.*\d).{8,}$/;
-	// const [contrasena, setContrasena] = useState("");
-
-	// const [isVisiblePassword, setIsVisiblePassword] = useState(false);
-	// const toggleVisibilityPassword = () => setIsVisiblePassword(!isVisiblePassword);
-	// const [isVisibleRepeat, setIsVisibleRepeat] = useState(false);
-	// const toggleVisibilityRepeat = () => setIsVisibleRepeat(!isVisibleRepeat);
 
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
-	const {
-		updateId,
-		updateNombre,
-		updateApodo,
-		updateFechaNacimiento,
-		updateEmail,
-		updateTipo,
-		updateEstado,
-	} = usePersonaStore();
-
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const navigate = useNavigate();
-	const [res, setRes] = useState<number>(-1);
+
 	const [err, setErr] = useState<any>(false);
 
+	const createPersonMutation = useCreatePerson();
+
 	useEffect(() => {
-		if (res === 201 && err === null) {
+		if (createPersonMutation.isSuccess && err === null) {
 			navigate(PublicRoutes.MESAS)
 		}
-		if (res === 400 && err.status === 422) {
+		if (createPersonMutation.isError && err.status === 422) {
 			onOpen()
 		}
-	}, [res, err, navigate]);
+	}, [err, navigate, createPersonMutation.isSuccess, createPersonMutation.isError]);
 
 	async function onSubmit(e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) {
 		e.preventDefault();
-		const info = Object.fromEntries(new FormData(e.currentTarget));
-		const formattedFechaNacimiento = new Date(info.fechaNacimiento.toString()).toISOString();
+		const formData = Object.fromEntries(new FormData(e.currentTarget));
+		const formattedFechaNacimiento = new Date(formData.fechaNacimiento.toString()).toISOString();
 
 		try {
-			const { data, error } = await supabase.auth.signUp({
-				email: info.email.toString(),
-				password: info.contrasena.toString(),
+			const { error } = await supabase.auth.signUp({
+				email: formData.email.toString(),
+				password: formData.contrasena.toString(),
 			})
 
-			console.log("Data: ", data);
+			// console.log("Data: ", data);
 			console.log("Error1: ", error);
 			setErr(error);
 		}
@@ -66,36 +50,16 @@ export default function Register() {
 			console.log("Error2: ", error);
 		}
 
-		try {
-			await axios.post("http://localhost:3000/persona", {
-				nombre: info.nombre,
-				apodo: info.apodo,
-				fechaNacimiento: formattedFechaNacimiento,
-				email: info.email,
-				tipo: 'Jugador',
-				estado: true
-			})
-				.then(response => {
-					setRes(response.status);
-					if (response.status === 201) {
-						//Store in Zustand
-						updateId(response.data.items.idPersona);
-						updateNombre(info.nombre.toString());
-						updateApodo(info.apodo.toString());
-						updateFechaNacimiento(info.fechaNacimiento.toString());
-						updateEmail(info.email.toString());
-						updateTipo('Jugador');
-						updateEstado(true);
-					}
-				})
-				.catch((error) => {
-					setRes(error.status);
-					console.error('Error posting data:', error);
-				});
-		}
-		catch (error) {
-			console.log("Response Axios error: ", error);
-		};
+		createPersonMutation.mutate({
+			nombre: formData.nombre.toString(),
+			apodo: formData.apodo.toString(),
+			fechaNacimiento: formattedFechaNacimiento,
+			email: formData.email.toString(),
+			tipo: 'Jugador',
+			quiereNarrar: false,
+			habilitado: true,
+			borrado: false
+		});
 	};
 
 	return (
