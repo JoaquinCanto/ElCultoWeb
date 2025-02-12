@@ -1,9 +1,11 @@
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar } from '@nextui-org/react';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar } from "@heroui/react";
 import criticat from '../assets/CriticatSinFondo.png';
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { PublicRoutes } from '../models/Routes';
-
+import { useLocation, useNavigate } from 'react-router-dom';
+import { PrivateRoutes, PublicRoutes } from '../models/Routes';
+import usePersonStore from "../stores/personStore";
+import { supabase } from "../helpers/supabaseClient";
+// import { useShallow } from 'zustand/shallow'
 
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,6 +19,17 @@ export default function Header() {
 		'Proximos Eventos',
 		'F.A.Q.',
 	];
+
+	const { apodo, tipo, updateApodo } = usePersonStore();
+	const navigate = useNavigate();
+
+	async function logOut() {
+		const { error } = await supabase.auth.signOut()
+		console.log(error);
+		updateApodo("");
+		usePersonStore.persist.clearStorage();
+		navigate(PublicRoutes.MESAS);
+	}
 
 	return (
 		<Navbar shouldHideOnScroll isBordered onMenuOpenChange={setIsMenuOpen}>
@@ -64,23 +77,36 @@ export default function Header() {
 							as='button'
 							className='transition-transform'
 							color='secondary'
-							name='Jason Hughes'
+							name={apodo}
 							size='sm'
 							src=''
 						/>
 					</DropdownTrigger>
 					<DropdownMenu aria-label='Profile Actions' variant='flat'>
 						<DropdownItem key='profile' className='h-14 gap-2'>
-							<p className='font-semibold'>Signed in as</p>
-							<p className='font-semibold'>zoey@example.com</p>
+							{apodo === '' ?
+								<p className='font-semibold'>¡Aún no has ingresado!</p> :
+								<>
+									<p className='font-semibold'>Has ingresado como:</p>
+									<p className='font-semibold'>{apodo}</p>
+								</>}
 						</DropdownItem>
-						<DropdownItem key='settings'>My Settings</DropdownItem>
-						<DropdownItem key='team_settings'>Team Settings</DropdownItem>
-						<DropdownItem key='analytics'>Analytics</DropdownItem>
+						{(tipo === 'Administrador') ?
+							<DropdownItem key='administration' href={PrivateRoutes.ADMINISTRACION}>Panel de Administacion</DropdownItem>
+							: <></>}
+						{/* <DropdownItem key='team_settings'>Team Settings</DropdownItem> */}
+						<DropdownItem key='analytics' href={PrivateRoutes.MISMESAS}>Mis Mesas</DropdownItem>
 						<DropdownItem key='system'>System</DropdownItem>
 						<DropdownItem key='configurations'>Configurations</DropdownItem>
-						<DropdownItem key='help_and_feedback'>Help & Feedback</DropdownItem>
-						<DropdownItem key='logout' color='danger'>Log Out</DropdownItem>
+						{apodo === '' ?
+							<>
+								<DropdownItem key='register' color='primary' href={PublicRoutes.REGISTRARSE}>Registrate</DropdownItem>
+								<DropdownItem key='login' color='success' href={PublicRoutes.INGRESAR}>Entrar</DropdownItem>
+
+							</>
+							:
+							<DropdownItem key='logout' color='danger' onPress={logOut}>Salir</DropdownItem>
+						}
 					</DropdownMenu>
 				</Dropdown>
 			</NavbarContent>
