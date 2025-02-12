@@ -26,7 +26,7 @@ type Action = {
 	clearStore: () => void;
 };
 
-const usePersonaStore = create<State & Action>()(
+const usePersonStore = create<State & Action>()(
 	persist(
 		(set) => ({
 			id: -1,
@@ -61,10 +61,10 @@ const usePersonaStore = create<State & Action>()(
 				})),
 		}),
 		{
-			name: 'persona-store', // Key in localStorage
+			name: 'person-store', // Key in localStorage
 			// storage: localStorage, // or sessionStorage
 		}
 	)
 );
 
-export default usePersonaStore;
+export default usePersonStore;

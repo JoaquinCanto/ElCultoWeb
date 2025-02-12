@@ -1,7 +1,7 @@
 import { PersonGet } from "../types/person";
-import usePersonaStore from "./personaStore";
+import usePersonStore from "./personStore";
 
-export function usePersonaStoreFill(data: PersonGet) {
+export function usePersonStoreFill(data: PersonGet) {
 	const {
 		updateId,
 		updateNombre,
@@ -11,7 +11,7 @@ export function usePersonaStoreFill(data: PersonGet) {
 		updateTipo,
 		updateHabilitado,
 		updateDesabilitadoHasta
-	} = usePersonaStore.getState();
+	} = usePersonStore.getState();
 
 	updateId(data.idPersona);
 	updateNombre(data.nombre);
