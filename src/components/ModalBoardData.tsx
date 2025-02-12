@@ -1,17 +1,21 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import usePersonaStore from "../stores/personaStore";
-import { getLocalTimeZone, today } from "@internationalized/date";
-import { Alert, Button, CalendarDate, Checkbox, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, Textarea, TimeInput, TimeInputValue } from "@heroui/react";
-import { ClockCircleLinearIcon } from "../components/Icons";
+import usePersonStore from "../stores/personStore";
+import { CalendarDate, getLocalTimeZone, Time, today } from "@internationalized/date";
+import { Alert, Button, Checkbox, DatePicker, DateValue, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, Textarea, TimeInput, TimeInputValue } from "@heroui/react";
+import { ClockCircleLinearIcon } from "./Icons";
 import PassGenerator from "./PassGenerator";
+import { useCreateBoard, useUpdateBoard } from "../services/mutations";
+import { useGames, useOpenBoards, usePlaces } from "../services/queries";
+import { Game } from "../types/game";
+import { Place } from "../types/place";
+import { BoardGet } from "../types/board";
 
 interface propTypes {
 	isOpen: boolean,
 	onOpenChange: () => void,
-	boards: any,
-	newBoardAdded: () => void,
+	boardToEdit?: BoardGet;
 }
+
 interface juegoTypes {
 	idJuego: number,
 	nombre: string,
@@ -24,17 +28,17 @@ interface lugarTypes {
 	direccion: string,
 }
 
-export default function ModalNewBoard(props: propTypes) {
+export default function ModalBoardData(props: propTypes) {
 
-	const { id, apodo } = usePersonaStore();
+	const { id, apodo } = usePersonStore();
 
-	const [juegos, setJuegos] = useState([]);
+	const [juegos, setJuegos] = useState<Game[]>([]);
 	const [juegoValue, setJuegoValue] = useState<string>("");
 
-	const [date, setDate] = useState<CalendarDate | null>();
+	const [date, setDate] = useState<DateValue | null>();
 	const [time, setTime] = useState<TimeInputValue | null>();
 
-	const [lugares, setLugares] = useState([]);
+	const [lugares, setLugares] = useState<Place[]>([]);
 	const [lugarValue, setLugarValue] = useState<string>("");
 
 	const [notas, setNotas] = useState<string>("");
@@ -45,42 +49,20 @@ export default function ModalNewBoard(props: propTypes) {
 	const [cupMin, setCupMin] = useState<number>();
 	const [cupMax, setCupMax] = useState<number>();
 
-	const [cod, setCod] = useState<string | null>(null);
+	const [cod, setCod] = useState<string | undefined>(undefined);
 	const [alertInfo, setAlertInfo] = useState<{ title: string; description: string | null, color: "danger" | "default" | "primary" | "secondary" | "success" | "warning" | undefined } | null>(null);
 
-	async function getGames() {
-		try {
-			await axios.get("http://localhost:3000/juego")
-				.then(response => {
-					setJuegos(response.data.items);
-				})
-				.catch((error) => {
-					console.error('Error getting data juegos:', error);
-				});
-		}
-		catch (error) {
-			console.log("Response Axios Error Juegos: ", error);
-		};
-	}
+	const createBoardMutation = useCreateBoard();
+	const updateBoardMutation = useUpdateBoard();
+	const openBoardsQuery = useOpenBoards();
+
+	const gamesQuery = useGames();
 
 	const handleSelectionGameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setJuegoValue(e.target.value);
 	}
 
-	async function getPlaces() {
-		try {
-			await axios.get("http://localhost:3000/lugar")
-				.then(response => {
-					setLugares(response.data.items);
-				})
-				.catch((error) => {
-					console.error('Error getting data lugares:', error);
-				});
-		}
-		catch (error) {
-			console.log("Response Axios Error Lugares: ", error);
-		}
-	}
+	const placesQuery = usePlaces();
 
 	const handleSelectionPlaceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setLugarValue(e.target.value);
@@ -105,61 +87,96 @@ export default function ModalNewBoard(props: propTypes) {
 	};
 
 	useEffect(() => {
-		getGames();
-		getPlaces();
-	}, [])
 
-	async function postNewBoard() {
+		if (props.boardToEdit) {
+			setJuegoValue(String(props.boardToEdit.idJuego));
+			const [year, month, day] = props.boardToEdit.fechaHora.split("T")[0].split("-").map(Number);
+			setDate(new CalendarDate(year, month, day));
+			const [hour, minute] = props.boardToEdit.fechaHora.split("T")[1].split(":").map(Number);
+			setTime(new Time(hour, minute));
+			setLugarValue(String(props.boardToEdit.idLugar));
+			setNotas(props.boardToEdit.notas);
+			setCupMin(props.boardToEdit.cupoMin);
+			setCupMax(props.boardToEdit.cupoMax);
+			setIsPublica(props.boardToEdit.publica);
+			setCod(props.boardToEdit.codigo || undefined);
+		}
+
+		if (!gamesQuery.isPending && gamesQuery.isSuccess) {
+			setJuegos(gamesQuery.data.items);
+		}
+		else if (!gamesQuery.isPending && gamesQuery.isError) {
+			console.error('Error getting data juegos:', gamesQuery.error);
+		}
+
+		if (!placesQuery.isPending && placesQuery.isSuccess) {
+			setLugares(placesQuery.data.items);
+		}
+		else if (!placesQuery.isPending && placesQuery.isError) {
+			console.error('Error getting data lugares:', placesQuery.error);
+		}
+
+		if (!createBoardMutation.isPending && createBoardMutation.isSuccess) {
+			props.onOpenChange();
+		} else if (!createBoardMutation.isPending && createBoardMutation.isError) {
+			showAlert("Error al crear la mesa", null, "danger");
+		}
+
+		if (!updateBoardMutation.isPending && updateBoardMutation.isSuccess) {
+			props.onOpenChange();
+		} else if (!updateBoardMutation.isPending && updateBoardMutation.isError) {
+			showAlert("Error al editar la mesa", null, "danger");
+		}
+
+	}, [
+		props.boardToEdit,
+		createBoardMutation.isPending,
+		createBoardMutation.isSuccess,
+		createBoardMutation.isError,
+		updateBoardMutation.isPending,
+		updateBoardMutation.isSuccess,
+		updateBoardMutation.isError,
+		gamesQuery.isPending,
+		gamesQuery.isSuccess,
+		gamesQuery.isError,
+		placesQuery.isPending,
+		placesQuery.isSuccess,
+		placesQuery.isError
+	]);
+
+	async function postBoard() {
+		setAlertInfo(null);
+
 		const dateTime = new Date(`${date?.toString()}T${time?.toString()}.000`).toISOString();
 
-		if (!(props.boards.find((mesa: any) => mesa.idNarrador === id && mesa.fechaHora === dateTime))) {
-
-			if (!isPublica) {
-				setCod(password);
-			} else {
-				setCod(null);
+		if (!(openBoardsQuery.data?.items.find((mesa: any) => mesa.idNarrador === id && mesa.fechaHora === dateTime))) {
+			if (cupMin === undefined || cupMax === undefined) {
+				showAlert("Ingresa un cupo minimo o maximo.", null, "danger");
+				return;
 			}
 
-			try {
-				await axios.post("http://localhost:3000/mesa", {
-					idNarrador: id,
-					idJuego: Number(juegoValue),
-					idLugar: Number(lugarValue),
-					fechaHora: dateTime,
-					notas: notas,
-					cupoMin: cupMin,
-					cupoMax: cupMax,
-					estado: 'Abierta',
-					publica: isPublica,
-					codigo: cod,
-				})
-					.then(response => {
-						// console.log("Response Axios: ", response);
-
-						if (response.status === 201) {
-							props.newBoardAdded();	// Agregar la nueva mesa al array de mesas
-							props.onOpenChange();	// Cerrar el modal
-						}
-						else {
-							console.log("Error al crear la mesa"); //continuar aqui
-							showAlert("Error al crear la mesa", null, "danger");
-						}
-
-					})
-					.catch((error) => {
-
-						console.error('Error posting data:', error);
-						showAlert("Error al crear la mesa", null, "danger");
-					});
-			}
-			catch (error) {
-				console.log("Response Axios error: ", error);
+			const boardData = {
+				idNarrador: id,
+				idJuego: Number(juegoValue),
+				idLugar: Number(lugarValue),
+				fechaHora: dateTime,
+				notas: notas,
+				cupoMin: cupMin,
+				cupoMax: cupMax,
+				estado: "Abierta",
+				publica: isPublica,
+				codigo: isPublica ? undefined : cod,
 			};
+
+			if (props.boardToEdit) {
+				updateBoardMutation.mutate({ boardId: props.boardToEdit.idMesa, data: boardData });
+			} else {
+				createBoardMutation.mutate(boardData);
+			}
 		}
+
 		else {
-			console.log("Ya existe una mesa para esa fecha y hora narrada por vos.");
 			showAlert("Ya existe una mesa para esa fecha y hora narrada por vos.", null, "danger");
-			// <Alert color="danger" title="Ya existe una mesa para esa fecha y hora narrada por vos." />
 		}
 	}
 
@@ -209,8 +226,8 @@ export default function ModalNewBoard(props: propTypes) {
 								label="Fecha de la Mesa: "
 								labelPlacement="outside"
 								name="fechaMesa"
-								value={date}
-								onChange={setDate}
+								value={date as unknown as import("@heroui/system/node_modules/@internationalized/date").DateValue}
+								onChange={(newDate) => newDate && setDate(newDate)}
 								errorMessage={(value) => {
 									if (value.isInvalid) {
 										return "Ingresa una fecha válida.";
@@ -311,9 +328,24 @@ export default function ModalNewBoard(props: propTypes) {
 							<Button color="danger" variant="light" onPress={onClose}>
 								Cerrar
 							</Button>
-							<Button color="success" onPress={postNewBoard}>
-								Publicar Mesa
-							</Button>
+							{props.boardToEdit ?
+								<Button
+									color="success"
+									onPress={postBoard}
+									isDisabled={updateBoardMutation.isPending}
+								>
+									{updateBoardMutation.isPending ? "Editando Mesa..." : "Editar Mesa"}
+								</Button>
+								:
+								<Button
+									color="success"
+									onPress={postBoard}
+									isDisabled={createBoardMutation.isPending}
+								>
+									{createBoardMutation.isPending ? "Creando Mesa..." : "Publicar Mesa"}
+								</Button>
+							}
+
 						</ModalFooter>
 						{alertInfo && (
 							<Alert
