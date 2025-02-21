@@ -1,7 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBoard, getBoardsNarrated, getGames, getOpenBoards, getPersonByEmail, getPersons, getPlaces, getPlayerInscriptions } from "./api";
+import { getAllGames, getAllowedGames, getAllowedPlaces, getAllPlaces, getBoard, getBoards, getBoardsNarrated, getGameById, getOpenBoards, getPersonByEmail, getPersonById, getPersons, getPlaceById, getPlayerInscriptions } from "./api";
 
 //-- Boards
+export function useBoards() {
+	return useQuery({
+		queryKey: ["boards"],
+		queryFn: getBoards,
+	})
+};
+
 export function useOpenBoards() {
 	return useQuery({
 		queryKey: ["openBoards"],
@@ -32,6 +39,14 @@ export function usePersons() {
 		queryFn: getPersons,
 	});
 };
+
+export function usePersonById(personId: number) {
+	return useQuery({
+		queryKey: ["personById", personId],
+		queryFn: () => getPersonById(personId),
+	})
+};
+
 export function usePersonByEmail(email: string) {
 	return useQuery({
 		queryKey: ["personByEmail", email],
@@ -41,18 +56,46 @@ export function usePersonByEmail(email: string) {
 };
 
 //-- Games
-export function useGames() {
+export function useAllGames() {
 	return useQuery({
-		queryKey: ["games"],
-		queryFn: () => getGames(),
+		queryKey: ["allGames"],
+		queryFn: () => getAllGames(),
+	})
+};
+
+export function useAllowedGames() {
+	return useQuery({
+		queryKey: ["allowedGames"],
+		queryFn: () => getAllowedGames(),
+	})
+};
+
+export function useGameById(gameId: number) {
+	return useQuery({
+		queryKey: ["gameById", gameId],
+		queryFn: () => getGameById(gameId),
 	})
 };
 
 //-- Places
-export function usePlaces() {
+export function useAllPlaces() {
 	return useQuery({
-		queryKey: ["places"],
-		queryFn: () => getPlaces(),
+		queryKey: ["allPlaces"],
+		queryFn: () => getAllPlaces(),
+	})
+};
+
+export function useAllowedPlaces() {
+	return useQuery({
+		queryKey: ["allowedPlaces"],
+		queryFn: () => getAllowedPlaces(),
+	})
+};
+
+export function usePlaceById(placeId: number) {
+	return useQuery({
+		queryKey: ["placeById", placeId],
+		queryFn: () => getPlaceById(placeId),
 	})
 };
 
