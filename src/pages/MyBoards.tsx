@@ -15,7 +15,7 @@ export default function MyBoards() {
 		{ key: "estado", label: "Estado", },
 		{ key: "asistencia", label: "Asistencia", },
 		{ key: "inscripto", label: "Fecha Inscripción", },
-		{ key: "acciones", label: "Acciones", },
+		{ key: "acciones", label: "Acciones", }
 	];
 
 	const checkAsistencia = (fechaMesa: string) => {
@@ -58,7 +58,7 @@ export default function MyBoards() {
 			{ key: "lugar", label: "Lugar", },
 			{ key: "estado", label: "Estado", },
 			{ key: "fechaCreacion", label: "Fecha Creacion", },
-			{ key: "acciones", label: "Acciones", },
+			{ key: "acciones", label: "Acciones", }
 		]
 
 		const boardsNarratedQuery = useBoardsNarrated(id);
