@@ -1,11 +1,15 @@
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, useDisclosure, Tooltip, Button } from "@heroui/react";
 import { useState, useMemo } from "react";
 import { EyeIcon, EditIcon, DeleteIcon } from "../components/Icons";
+import { LuTimer, LuTimerOff } from "react-icons/lu";
 import { MdOutlineCancel } from "react-icons/md";
-import ModalAction from "./ModalAction";
-import { useCancelBoard, useCancelInscription } from "../services/mutations";
+import ModalUserActions from "./modals/ModalUserActions";
+import { useBanPerson, useCancelBoard, useCancelInscription, useUnbanPerson, useUnsubscribeGame, useUnsubscribePerson, useUnsubscribePlace, useUpdateGame, useUpdatePlace } from "../services/mutations";
 import { useBoard } from "../services/queries";
 import ModalBoardData from "./ModalBoardData";
+import ModalBoardActions from "./modals/ModalBoardActions";
+import ModalGameActions from "./modals/ModalGameActions";
+import ModalPlaceActions from "./modals/ModalPlaceActions";
 
 interface Column {
 	key: string;
@@ -16,10 +20,10 @@ interface DisplayTableProps<T> {
 	pages: number;
 	columns: Column[];
 	data: T[];
-	actionType: "player" | "narrator";
+	actionType: "player" | "narrator" | "admin" | "board" | "user" | "game" | "place";
 }
 
-export default function DisplayTable<T extends { key: number, mesa: number, estado: string }>({
+export default function DisplayTable<T extends { key: number, mesa?: number, estado?: string, habilitado?: boolean }>({ // 
 	pages,
 	columns,
 	data,
@@ -29,10 +33,10 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 	const rowsPerPage = 10;
 
 	const [selectedItem, setSelectedItem] = useState<T | null>(null);
-	const [modalType, setModalType] = useState<"view" | "unsubscribe" | "edit" | "cancel" | null>(null);
+	const [modalAction, setModalAction] = useState<"view" | "ban" | "unban" | "unsubscribe" | "edit" | "cancel" | null>(null);
+	const [activeModal, setActiveModal] = useState<"board" | "user" | "game" | "place" | null>(null);
 	const [isBoardDataOpen, setIsBoardDataOpen] = useState(false);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
 
 	const paginatedData = useMemo(() => {
 		const start = (page - 1) * rowsPerPage;
@@ -40,37 +44,104 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 		return data.slice(start, end);
 	}, [page, data]);
 
-	const handleOpenModal = (item: T, type: "view" | "unsubscribe" | "edit" | "cancel") => {
+	const handleOpenModal = (
+		item: T,
+		entity: "board" | "user" | "game" | "place",
+		action: "view" | "ban" | "unban" | "unsubscribe" | "edit" | "cancel"
+	) => {
 		setSelectedItem(item);
-		setModalType(type);
-
-		if (type === "edit") {
-			setIsBoardDataOpen(true)
+		setActiveModal(entity);
+		setModalAction(action);
+		if (entity === "board") {
+			// If we are editing a board, open the dedicated edit modal
+			if (action === "edit" && item.mesa !== undefined) {
+				setIsBoardDataOpen(true);
+			} else {
+				onOpen();
+			}
 		} else {
+			// For other entity types, simply open the modal
 			onOpen();
 		}
 	};
 
+	//--Board Mutations
 	const cancelInscription = useCancelInscription();
 	const cancelBoard = useCancelBoard();
 
-	const handleConfirm = () => {
+	//--User Mutations
+	const banPersonMutation = useBanPerson();
+	const unbanPersonMutation = useUnbanPerson();
+	const unsubscribePersonMutation = useUnsubscribePerson();
+
+	//--Game Mutation
+	const updateGameMutation = useUpdateGame();
+	const unsubscribeGameMutation = useUnsubscribeGame();
+
+	//--Place Mutations
+	const updatePlaceMutation = useUpdatePlace();
+	const unsubscribePlaceMutation = useUnsubscribePlace();
+
+	const handleConfirm = (arg1?: string, arg2?: string) => {
 		if (selectedItem) {
-			switch (modalType) {
-				case "view":
-					// console.log(`Nothing`);
-					break;
-				case "unsubscribe":
-					cancelInscription.mutate(selectedItem.key);
-					break;
-				case "edit":
-					console.log(`Editing table ${selectedItem.key}`);
-					break;
-				case "cancel":
-					cancelBoard.mutate(selectedItem.mesa);
-					break;
-				default:
-					break;
+			if (activeModal === "board") {
+				switch (modalAction) {
+					case "view":
+						// Do nothing extra for view
+						break;
+					case "unsubscribe":
+						cancelInscription.mutate(selectedItem.key);
+						break;
+					case "edit":
+						console.log(`Editing board ${selectedItem.key}`);
+						break;
+					case "cancel":
+						cancelBoard.mutate(selectedItem.mesa!);
+						break;
+					default:
+						break;
+				}
+			}
+			if (activeModal === "user") {
+				switch (modalAction) {
+					case "ban":
+						banPersonMutation.mutate({ personId: selectedItem.key, untilDate: arg1! });
+						break;
+					case "unban":
+						unbanPersonMutation.mutate(selectedItem.key);
+						break;
+					case "unsubscribe":
+						unsubscribePersonMutation.mutate(selectedItem.key);
+						break;
+				}
+			}
+			if (activeModal === "game") {
+				switch (modalAction) {
+					case "edit":
+						const data = {
+							nombre: arg1!,
+							descripcion: arg2!,
+						}
+						updateGameMutation.mutate({ gameId: selectedItem.key, data: data });
+						break;
+					case "unsubscribe":
+						unsubscribeGameMutation.mutate(selectedItem.key);
+						break;
+				}
+			}
+			if (activeModal === "place") {
+				switch (modalAction) {
+					case "edit":
+						const data = {
+							nombre: arg1!,
+							direccion: arg2!,
+						}
+						updatePlaceMutation.mutate({ placeId: selectedItem.key, data: data });
+						break;
+					case "unsubscribe":
+						unsubscribePlaceMutation.mutate(selectedItem.key);
+						break;
+				}
 			}
 		}
 	};
@@ -85,7 +156,7 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 							isIconOnly
 							color="primary"
 							variant="light"
-							onPress={() => handleOpenModal(item, "view")}
+							onPress={() => handleOpenModal(item, "board", "view")}
 						>
 							<EyeIcon />
 						</Button>
@@ -96,7 +167,7 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 							isIconOnly
 							color="danger"
 							variant="light"
-							onPress={() => handleOpenModal(item, "unsubscribe")}
+							onPress={() => handleOpenModal(item, "board", "unsubscribe")}
 						>
 							<MdOutlineCancel />
 						</Button>
@@ -112,7 +183,7 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 							isIconOnly
 							color="primary"
 							variant="light"
-							onPress={() => handleOpenModal(item, "view")}
+							onPress={() => handleOpenModal(item, "board", "view")}
 						>
 							<EyeIcon />
 						</Button>
@@ -125,7 +196,7 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 									isIconOnly
 									color="primary"
 									variant="light"
-									onPress={() => handleOpenModal(item, "edit")}
+									onPress={() => handleOpenModal(item, "board", "edit")}
 								>
 									<EditIcon />
 								</Button>
@@ -137,7 +208,7 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 									isIconOnly
 									color="danger"
 									variant="light"
-									onPress={() => handleOpenModal(item, "cancel")}
+									onPress={() => handleOpenModal(item, "board", "cancel")}
 								>
 									<DeleteIcon />
 								</Button>
@@ -147,8 +218,136 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 				</div>
 			);
 		}
+		else if (actionType === "board") {
+			// if (item.mesa !== undefined) {
+			return (
+				<div className="relative flex items-center gap-2">
+					<Tooltip content="Ver Mesa">
+						<Button
+							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+							isIconOnly
+							color="primary"
+							variant="light"
+							onPress={() => handleOpenModal(item, "board", "view")}
+						>
+							<EyeIcon />
+						</Button>
+					</Tooltip>
+				</div>
+			)
+		}
+		else if (actionType === "user") {
+			return (
+				<div className="relative flex items-center gap-2">
+					{item.estado === 'Habilitado' &&
+						<Tooltip content="Inhabilitar" color="danger">
+							<Button
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								isIconOnly
+								color="danger"
+								variant="light"
+								onPress={() => handleOpenModal(item, "user", "ban")}
+							>
+								<LuTimer />
+							</Button>
+						</Tooltip>
+					}
+					{item.estado === 'Inhabilitado' &&
+						<Tooltip content="Rehabilitar" color="success">
+							<Button
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								isIconOnly
+								color="success"
+								variant="light"
+								onPress={() => handleOpenModal(item, "user", "unban")}
+							>
+								<LuTimerOff />
+							</Button>
+						</Tooltip>
+					}
+					{item.estado !== 'DeBaja' &&
+						<Tooltip content="Dar de Baja" color="danger">
+							<Button
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								isIconOnly
+								color="danger"
+								variant="light"
+								onPress={() => handleOpenModal(item, "user", "unsubscribe")}
+							>
+								<MdOutlineCancel />
+							</Button>
+						</Tooltip>
+					}
+				</div>
+			)
+		}
+		else if (actionType === "game") {
+			return (
+				<>
+					{item.habilitado &&
+						<div className="relative flex items-center gap-2">
+							<Tooltip content="Editar" >
+								<Button
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									isIconOnly
+									color="primary"
+									variant="light"
+									onPress={() => handleOpenModal(item, "game", "edit")}
+								>
+									<EditIcon />
+								</Button>
+							</Tooltip>
+							<Tooltip content="Dar de Baja" color="danger">
+								<Button
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									isIconOnly
+									color="danger"
+									variant="light"
+									onPress={() => handleOpenModal(item, "game", "unsubscribe")}
+								>
+									<MdOutlineCancel />
+								</Button>
+							</Tooltip>
+						</div>
+					}
+				</>
+			)
+		}
+		else if (actionType === "place") {
+			return (
+				<>
+					{item.habilitado &&
+						<div className="relative flex items-center gap-2">
+							<Tooltip content="Editar" >
+								<Button
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									isIconOnly
+									color="primary"
+									variant="light"
+									onPress={() => handleOpenModal(item, "place", "edit")}
+								>
+									<EditIcon />
+								</Button>
+							</Tooltip>
+							<Tooltip content="Dar de Baja" color="danger">
+								<Button
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									isIconOnly
+									color="danger"
+									variant="light"
+									onPress={() => handleOpenModal(item, "place", "unsubscribe")}
+								>
+									<MdOutlineCancel />
+								</Button>
+							</Tooltip>
+						</div>
+					}
+				</>
+			)
+		}
 		return null;
 	};
+	// };
 
 	const boardQuery = useBoard(selectedItem?.mesa ?? 0);
 
@@ -190,20 +389,49 @@ export default function DisplayTable<T extends { key: number, mesa: number, esta
 				</TableBody>
 			</Table>
 
-			{/* ModalAction Component */}
-			{selectedItem && modalType && (
-				<ModalAction
+			{activeModal === "board" && selectedItem && modalAction && (
+				<ModalBoardActions
 					title={
-						modalType === "view"
+						modalAction === "view"
 							? "Mesa"
-							: modalType === "unsubscribe"
+							: modalAction === "unsubscribe"
 								? "Desinscribirse de la mesa:"
-								: modalType === "edit"
+								: modalAction === "edit"
 									? "Editar Mesa"
 									: "Cancelar Mesa"
 					}
-					type={modalType}
-					boardId={modalType === "view" || modalType === "edit" ? selectedItem.mesa : -1}
+					type={modalAction}
+					boardId={selectedItem.mesa!}
+					isOpen={isOpen}
+					onOpenChange={onOpenChange}
+					onConfirm={handleConfirm}
+				/>
+			)}
+
+			{activeModal === "user" && selectedItem && (
+				<ModalUserActions
+					type={modalAction}
+					userId={selectedItem.key}
+					isOpen={isOpen}
+					onOpenChange={onOpenChange}
+					onConfirm={handleConfirm}
+				/>
+			)}
+
+			{activeModal === "game" && selectedItem && (
+				<ModalGameActions
+					type={modalAction}
+					gameId={selectedItem.key}
+					isOpen={isOpen}
+					onOpenChange={onOpenChange}
+					onConfirm={handleConfirm}
+				/>
+			)}
+
+			{activeModal === "place" && selectedItem && (
+				<ModalPlaceActions
+					type={modalAction}
+					placeId={selectedItem.key}
 					isOpen={isOpen}
 					onOpenChange={onOpenChange}
 					onConfirm={handleConfirm}
