@@ -42,7 +42,6 @@ export default function Register() {
 				password: formData.contrasena.toString(),
 			})
 
-			// console.log("Data: ", data);
 			console.log("Error1: ", error);
 			setErr(error);
 		}
@@ -56,9 +55,8 @@ export default function Register() {
 			fechaNacimiento: formattedFechaNacimiento,
 			email: formData.email.toString(),
 			tipo: 'Jugador',
-			quiereNarrar: false,
-			habilitado: true,
-			borrado: false
+			estado: 'Habilitado',
+			quiereNarrar: false
 		});
 	};
 
