@@ -23,7 +23,6 @@ export default function LogIn() {
 	const [email, setEmail] = useState<string | null>(null);
 	const personByEmailQuery = usePersonByEmail(email ?? "");
 
-
 	useEffect(() => {
 		if (personByEmailQuery.data && !personByEmailQuery.isPending) {
 			usePersonStoreFill(personByEmailQuery.data.items);
