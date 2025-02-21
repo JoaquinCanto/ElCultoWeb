@@ -1,10 +1,33 @@
 export interface GameResponse {
 	status: number,
 	total: number,
-	items: Game[]
+	items: GameGet[]
 }
-export interface Game {
+
+export interface GameSingleResponse {
+	status: number,
+	total: number,
+	items: GameGet
+}
+
+export interface GameGet {
 	idJuego: number,
+	agregado: string,
 	nombre: string,
-	descripcion: string
+	descripcion: string,
+	estado: boolean,
+	fechaBaja?: string
+}
+
+export interface GamePost {
+	nombre: string,
+	descripcion: string,
+	estado: boolean,
+}
+
+export interface GameUpdate {
+	nombre: string,
+	descripcion: string,
+	estado?: boolean,
+	fechaBaja?: string
 }
