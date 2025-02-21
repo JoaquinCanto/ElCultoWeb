@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { useCancelBoard, useCreateInscription, useCancelInscription } from '../services/mutations';
 import { DeleteIcon, EditIcon } from './Icons';
 
-
 interface propTypes {
 	idMesa: number,
 	juego: string,
@@ -98,7 +97,7 @@ export default function Game(props: propTypes) {
 			await axios.post("http://localhost:3000/inscripcion", {
 				idJugador: id,
 				idMesa: props.idMesa,
-				borrado: false
+				baja: false
 			})
 				.then(response => {
 					// console.log("Response: ", response)
@@ -148,25 +147,6 @@ export default function Game(props: propTypes) {
 		cancelBoardMutation.mutateAsync(idMesa);
 
 	}
-	// async function cancelBoard() {
-	// 	try {
-	// 		axios.put(`http://localhost:3000/mesa/${props.idMesa.toString()}`, {
-	// 			estado: 'Cancelada'
-	// 		})
-	// 			.then(response => {
-	// 				// console.log("Response: ", response)
-	// 				if (response.status === 200) {
-	// 					props.updateMesas();
-	// 				}
-	// 			})
-	// 			.catch((error) => {
-	// 				console.error('Error deleting inscripcion:', error);
-	// 			});
-	// 	}
-	// 	catch (error) {
-	// 		console.log("Response Axios error: ", error);
-	// 	};
-	// }
 
 	const renderButtons = () => {
 		if (isNarrator) {
@@ -246,23 +226,6 @@ export default function Game(props: propTypes) {
 				/>
 
 				<div className='w-1/2 flex justify-center'>
-					{/* {isInscribed ?
-						<Button color='primary'
-							variant='ghost'
-							startContent={<FaMinus />}
-							onPress={unsubscribe}
-						>
-							Desinscribirse
-						</Button>
-						:
-						<Button color='primary'
-							variant='ghost'
-							startContent={<FaPlus />}
-							onPress={inscription}
-						>
-							Unirse
-						</Button>
-					} */}
 					{renderButtons()}
 				</div>
 			</CardFooter>
