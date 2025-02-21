@@ -1,4 +1,10 @@
-export interface PersonResponse {
+export interface PersonsResponse {
+	status: number,
+	total: number,
+	items: PersonGet[]
+}
+
+export interface PersonSingleResponse {
 	status: number,
 	total: number,
 	items: PersonGet
@@ -11,9 +17,11 @@ export interface PersonGet {
 	fechaNacimiento: string,
 	email: string,
 	tipo: string,
+	estado: string,
 	quiereNarrar: boolean,
-	habilitado: boolean,
-	desabilitadoHasta?: string
+	fechaAlta: string,
+	inhabilitadoHasta?: string,
+	fechaBaja?: string
 }
 
 export interface PersonPost {
@@ -22,7 +30,6 @@ export interface PersonPost {
 	fechaNacimiento: string,
 	email: string,
 	tipo: string,
-	quiereNarrar: boolean,
-	habilitado: boolean,
-	borrado: boolean
+	estado: string,
+	quiereNarrar: boolean
 }
