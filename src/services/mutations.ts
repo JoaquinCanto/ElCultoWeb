@@ -1,9 +1,28 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BoardPost } from "../types/board";
-import { cancelBoard, cancelInscription, createBoard, createInscription, createPerson, getPersonByEmail, updateBoard } from "./api";
-import { PersonPost } from "../types/person";
 import { usePersonStoreFill } from "../stores/personStoreFill";
+import { BoardPost } from "../types/board";
+import { PersonPost } from "../types/person";
 import { InscriptionPost } from "../types/inscription";
+import { GamePost, GameUpdate } from "../types/game";
+import { PlacePost, PlaceUpdate } from "../types/place";
+import {
+	banPerson,
+	createBoard,
+	cancelBoard,
+	cancelInscription,
+	createGame,
+	createInscription,
+	createPerson,
+	createPlace,
+	getPersonByEmail,
+	unbanPeson,
+	unsubscribeGame,
+	unsubscribePerson,
+	updateBoard,
+	updateGame,
+	updatePlace,
+	unsubscribePlace
+} from "./api";
 
 //-- Boards
 export function useCreateBoard() {
@@ -93,6 +112,57 @@ export function useCreatePerson() {
 	})
 };
 
+export function useBanPerson() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ personId, untilDate }: { personId: number; untilDate: string }) => banPerson(personId, untilDate),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on ban person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["persons"] });
+				// await queryClient.invalidateQueries({ queryKey: ["personById"] });
+			}
+		},
+	})
+};
+
+export function useUnbanPerson() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (personId: number) => unbanPeson(personId),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on unban person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["persons"] });
+				// await queryClient.invalidateQueries({ queryKey: ["personById"] });
+			}
+		},
+	})
+};
+
+export function useUnsubscribePerson() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (personId: number) => unsubscribePerson(personId),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on unsubscribe person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["persons"] });
+				await queryClient.invalidateQueries({ queryKey: ["personById"] });
+			}
+		},
+	})
+};
+
 //-- Inscriptions
 export function useCreateInscription() {
 	const queryClient = useQueryClient();
@@ -121,6 +191,110 @@ export function useCancelInscription() {
 				console.log("Error on cancel inscripcion:", error);
 			} else {
 				await queryClient.invalidateQueries({ queryKey: ["playerInscriptions"] });
+			}
+		},
+	})
+};
+
+//--Games
+export function useCreateGame() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: GamePost) => createGame(data),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on create game person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["allGames"] });
+				await queryClient.invalidateQueries({ queryKey: ["allowedGames"] });
+			}
+		},
+	})
+};
+
+export function useUpdateGame() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ gameId, data }: { gameId: number, data: GameUpdate }) => updateGame(gameId, data),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on create game person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["allGames"] });
+				await queryClient.invalidateQueries({ queryKey: ["allowedGames"] });
+			}
+		},
+	})
+}
+
+export function useUnsubscribeGame() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (gameId: number) => unsubscribeGame(gameId),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on unsubscribe game.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["allGames"] });
+				await queryClient.invalidateQueries({ queryKey: ["allowedGames"] });
+			}
+		},
+	})
+};
+
+//--Places
+export function useCreatePlace() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: PlacePost) => createPlace(data),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on create place.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["allPlaces"] });
+				await queryClient.invalidateQueries({ queryKey: ["allowedPlaces"] });
+			}
+		},
+	})
+};
+
+export function useUpdatePlace() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ placeId, data }: { placeId: number, data: PlaceUpdate }) => updatePlace(placeId, data),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on create game person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["allPlaces"] });
+				await queryClient.invalidateQueries({ queryKey: ["allowedPlaces"] });
+			}
+		},
+	})
+}
+
+export function useUnsubscribePlace() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (placeId: number) => unsubscribePlace(placeId),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on unsubscribe game.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["allPlaces"] });
+				await queryClient.invalidateQueries({ queryKey: ["allowedPlaces"] });
 			}
 		},
 	})
