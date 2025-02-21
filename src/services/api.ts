@@ -1,14 +1,18 @@
 import axios from "axios";
 import { BoardPost, BoardResponse, BoardSingleResponse } from "../types/board";
-import { PersonPost, PersonResponse } from "../types/person";
-import { GameResponse } from "../types/game";
-import { PlaceResponse } from "../types/place";
+import { PersonPost, PersonSingleResponse, PersonsResponse } from "../types/person";
+import { GamePost, GameResponse, GameSingleResponse, GameUpdate } from "../types/game";
+import { PlacePost, PlaceResponse, PlaceSingleResponse, PlaceUpdate } from "../types/place";
 import { InscriptionPost, InscriptionResponse } from "../types/inscription";
 
 const BASE_URL = "http://localhost:3000";
 const axiosInstance = axios.create({ baseURL: BASE_URL });
 
 //-- Boards
+export const getBoards = async () => {
+	return (await axiosInstance.get<BoardResponse>("mesa")).data;
+};
+
 export const getOpenBoards = async () => {
 	return (await axiosInstance.get<BoardResponse>("mesa/abierta")).data;
 };
@@ -35,25 +39,80 @@ export const cancelBoard = async (boardId: number) => {
 
 //-- Persons
 export const getPersons = async () => {
-	return (await axiosInstance.get<PersonResponse[]>("persona")).data;
+	return (await axiosInstance.get<PersonsResponse>("persona")).data;
+};
+
+export const getPersonById = async (personId: number) => {
+	return (await axiosInstance.get<PersonSingleResponse>(`persona/${personId}`)).data;
 };
 
 export const getPersonByEmail = async (email: string) => {
-	return (await axiosInstance.get<PersonResponse>(`persona/email/${email}`)).data;
+	return (await axiosInstance.get<PersonSingleResponse>(`persona/email/${email}`)).data;
 };
 
 export const createPerson = async (data: PersonPost) => {
 	await axiosInstance.post("persona", data);
 };
 
+export const banPerson = async (personId: number, untilDate: string) => {
+	await axiosInstance.put(`persona/${personId}`, { estado: 'Inhabilitado', inhabilitadoHasta: untilDate });
+};
+
+export const unbanPeson = async (personId: number) => {
+	await axiosInstance.put(`persona/${personId}`, { estado: 'Habilitado', inhabilitadoHasta: null });
+};
+
+export const unsubscribePerson = async (personId: number) => {
+	await axiosInstance.put(`persona/${personId}`, { estado: 'DeBaja', inhabilitadoHasta: new Date("9999-09-09T00:00:00.000Z").toISOString(), fechaBaja: new Date().toISOString() });
+};
+
 //-- Games
-export const getGames = async () => {
+export const getAllGames = async () => {
 	return (await axiosInstance.get<GameResponse>("juego")).data;
+};
+export const getAllowedGames = async () => {
+	return (await axiosInstance.get<GameResponse>("juego/habilitado")).data;
+};
+
+export const getGameById = async (id: number) => {
+	return (await axiosInstance.get<GameSingleResponse>(`juego/${id}`)).data;
+};
+
+export const createGame = async (data: GamePost) => {
+	await axiosInstance.post("juego", data);
+};
+
+export const updateGame = async (gameId: number, data: GameUpdate) => {
+	await axiosInstance.put(`juego/${gameId}`, data);
+};
+
+export const unsubscribeGame = async (gameId: number) => {
+	await axiosInstance.put(`juego/${gameId}`, { estado: false, fechaBaja: new Date().toISOString() });
 };
 
 //-- Places
-export const getPlaces = async () => {
+export const getAllPlaces = async () => {
 	return (await axiosInstance.get<PlaceResponse>("lugar")).data;
+};
+
+export const getAllowedPlaces = async () => {
+	return (await axiosInstance.get<PlaceResponse>("lugar/habilitado")).data;
+};
+
+export const getPlaceById = async (placeId: number) => {
+	return (await axiosInstance.get<PlaceSingleResponse>(`lugar/${placeId}`)).data;
+}
+
+export const createPlace = async (data: PlacePost) => {
+	await axiosInstance.post("lugar", data);
+};
+
+export const updatePlace = async (placeId: number, data: PlaceUpdate) => {
+	await axiosInstance.put(`lugar/${placeId}`, data);
+};
+
+export const unsubscribePlace = async (placeId: number) => {
+	await axiosInstance.put(`lugar/${placeId}`, { estado: false, fechaBaja: new Date().toISOString() });
 };
 
 //-- Inscription
