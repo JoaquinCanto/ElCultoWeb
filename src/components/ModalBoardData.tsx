@@ -5,9 +5,9 @@ import { Alert, Button, Checkbox, DatePicker, DateValue, Input, Modal, ModalBody
 import { ClockCircleLinearIcon } from "./Icons";
 import PassGenerator from "./PassGenerator";
 import { useCreateBoard, useUpdateBoard } from "../services/mutations";
-import { useGames, useOpenBoards, usePlaces } from "../services/queries";
-import { Game } from "../types/game";
-import { Place } from "../types/place";
+import { useAllowedGames, useOpenBoards, useAllowedPlaces } from "../services/queries";
+import { GameGet } from "../types/game";
+import { PlaceGet } from "../types/place";
 import { BoardGet } from "../types/board";
 
 interface propTypes {
@@ -16,29 +16,17 @@ interface propTypes {
 	boardToEdit?: BoardGet;
 }
 
-interface juegoTypes {
-	idJuego: number,
-	nombre: string,
-	descripcion: string,
-}
-
-interface lugarTypes {
-	idLugar: number,
-	nombre: string,
-	direccion: string,
-}
-
 export default function ModalBoardData(props: propTypes) {
 
 	const { id, apodo } = usePersonStore();
 
-	const [juegos, setJuegos] = useState<Game[]>([]);
+	const [juegos, setJuegos] = useState<GameGet[]>([]);
 	const [juegoValue, setJuegoValue] = useState<string>("");
 
 	const [date, setDate] = useState<DateValue | null>();
 	const [time, setTime] = useState<TimeInputValue | null>();
 
-	const [lugares, setLugares] = useState<Place[]>([]);
+	const [lugares, setLugares] = useState<PlaceGet[]>([]);
 	const [lugarValue, setLugarValue] = useState<string>("");
 
 	const [notas, setNotas] = useState<string>("");
@@ -56,13 +44,13 @@ export default function ModalBoardData(props: propTypes) {
 	const updateBoardMutation = useUpdateBoard();
 	const openBoardsQuery = useOpenBoards();
 
-	const gamesQuery = useGames();
+	const gamesQuery = useAllowedGames();
 
 	const handleSelectionGameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setJuegoValue(e.target.value);
 	}
 
-	const placesQuery = usePlaces();
+	const placesQuery = useAllowedPlaces();
 
 	const handleSelectionPlaceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setLugarValue(e.target.value);
@@ -214,7 +202,7 @@ export default function ModalBoardData(props: propTypes) {
 								selectedKeys={[juegoValue]}
 								onChange={handleSelectionGameChange}
 							>
-								{juegos.map((juego: juegoTypes) => (
+								{juegos.map((juego: GameGet) => (
 									<SelectItem key={juego.idJuego}>{juego.nombre}</SelectItem>
 								))}
 							</Select>
@@ -258,7 +246,7 @@ export default function ModalBoardData(props: propTypes) {
 								selectedKeys={[lugarValue]}
 								onChange={handleSelectionPlaceChange}
 							>
-								{lugares.map((lugar: lugarTypes) => (
+								{lugares.map((lugar: PlaceGet) => (
 									<SelectItem key={lugar.idLugar}>{lugar.nombre}</SelectItem>
 								))}
 							</Select>
