@@ -43,7 +43,7 @@ export default function Boards() {
 	}
 
 	function renderNewBoardButton() {
-		if (tipo === "Narrador") {
+		if (tipo !== "Jugador") {
 			return (
 				<div className="flex flex-col gap-2">
 					<Button className="w-40"
