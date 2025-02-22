@@ -20,7 +20,7 @@ export default function Header() {
 		'F.A.Q.',
 	];
 
-	const { apodo, tipo, updateApodo } = usePersonStore();
+	const { id, apodo, tipo, updateApodo } = usePersonStore();
 	const navigate = useNavigate();
 
 	async function logOut() {
@@ -92,12 +92,15 @@ export default function Header() {
 								</>}
 						</DropdownItem>
 						{(tipo === 'Administrador') ?
-							<DropdownItem key='administration' href={PrivateRoutes.ADMINISTRACION}>Panel de Administacion</DropdownItem>
+							<>
+								<DropdownItem key='administration' href={PrivateRoutes.ADMINISTRACION}>Panel de Administacion</DropdownItem>
+								<DropdownItem key='reportes' href={PrivateRoutes.REPORTES}>Reportes</DropdownItem>
+							</>
 							: <></>}
 						{/* <DropdownItem key='team_settings'>Team Settings</DropdownItem> */}
-						<DropdownItem key='analytics' href={PrivateRoutes.MISMESAS}>Mis Mesas</DropdownItem>
+						<DropdownItem key='myBoards' href={PrivateRoutes.MISMESAS}>Mis Mesas</DropdownItem>
+						{(id !== -1) ? <DropdownItem key='myProfile' href={PrivateRoutes.MIPERFIL}>Mi Perfil</DropdownItem> : <></>}
 						<DropdownItem key='system'>System</DropdownItem>
-						<DropdownItem key='configurations'>Configurations</DropdownItem>
 						{apodo === '' ?
 							<>
 								<DropdownItem key='register' color='primary' href={PublicRoutes.REGISTRARSE}>Registrate</DropdownItem>
