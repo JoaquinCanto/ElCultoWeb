@@ -3,16 +3,16 @@ import { PrivateRoutes, PublicRoutes } from './models/Routes';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthGuard } from './guards/authGuard';
 
-// import Placeholder from './components/Placeholder';
 import Layout from './pages/Layout';
 import Boards from './pages/Boards';
 import Register from './pages/Register';
 import LogIn from './pages/LogIn';
 import MyBoards from './pages/MyBoards';
 import ControlPanel from './pages/ControlPanel';
+import Reports from './pages/Reports';
+import MyProfile from './pages/MyProfile';
 
 function App() {
-
 	return (
 		<>
 			<BrowserRouter>
@@ -22,10 +22,14 @@ function App() {
 						<Route path={PublicRoutes.MESAS} element={<Boards />} />
 						<Route path={PublicRoutes.REGISTRARSE} element={<Register />} />
 						<Route path={PublicRoutes.INGRESAR} element={<LogIn />} />
+						{/* <Route path={PublicRoutes.NOSOTROS} element={< />} />*/}
+						{/* <Route path={PublicRoutes.FAQ} element={< />} /> */}
 
 						<Route element={<AuthGuard />}>
 							<Route path={PrivateRoutes.MISMESAS} element={<MyBoards />} />
 							<Route path={PrivateRoutes.ADMINISTRACION} element={<ControlPanel />} />
+							<Route path={PrivateRoutes.REPORTES} element={<Reports />} />
+							<Route path={PrivateRoutes.MIPERFIL} element={<MyProfile />} />
 						</Route>
 					</Route>
 				</Routes>
