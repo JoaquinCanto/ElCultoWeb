@@ -6,18 +6,21 @@ import { useOpenBoards } from "../services/queries";
 import usePersonStore from "../stores/personStore";
 import ModalBoardData from "../components/ModalBoardData";
 import { Button, Card, Skeleton, Divider } from "@heroui/react";
+import ModalSuggestion from "../components/modals/ModalSuggestion";
 
 export default function Boards() {
 
 	const { tipo } = usePersonStore();
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const toggleModal = () => setIsModalOpen(!isModalOpen);
+	const [isModalNewBoardOpen, setIsModalNewBoardOpen] = useState(false);
+	const toggleModalNewBoard = () => setIsModalNewBoardOpen(!isModalNewBoardOpen);
+
+	const [isModalSuggestionOpen, setIsModalSuggestionOpen] = useState(false);
+	const toggleModalSuggestion = () => setIsModalSuggestionOpen(!isModalSuggestionOpen);
 
 	const openBoardsQuery = useOpenBoards();
 
 	const renderBoards = () => {
-		console.log(openBoardsQuery.data);
 		if (!openBoardsQuery.data?.items || !Array.isArray(openBoardsQuery.data.items)) {
 			return <p>No hay mesas disponibles</p>
 		}
@@ -42,35 +45,60 @@ export default function Boards() {
 		}
 	}
 
-	function renderNewBoardButton() {
+	const renderNewBoardButton = () => {
 		if (tipo !== "Jugador") {
 			return (
 				<div className="flex flex-col gap-2">
-					<Button className="w-40"
+					<Button
+						className="w-40"
 						color='primary'
 						variant='ghost'
 						startContent={<FaPlus />}
-						onPress={toggleModal}
+						onPress={toggleModalNewBoard}
 					>
 						Agregar Mesa
 					</Button>
-					<Divider className="w-screen" />
 				</div>
 			)
 		}
 	}
 
+	const renderSuggestionButton = () => {
+		return (
+			<div className="flex flex-col gap-2">
+				<Button
+					className="w-40"
+					color='primary'
+					variant='ghost'
+					startContent={<FaPlus />}
+					onPress={toggleModalSuggestion}
+				>
+					Nueva Sugerencia
+				</Button>
+			</div>
+		)
+	}
+
 	function renderPage() {
 		return (
-			<div className='h-full p-4 flex flex-wrap gap-4'>
-				{renderNewBoardButton()}
-				{renderBoards()}
+			<div className="h-full p-4 flex flex-col gap-2">
+				<div>
+					{renderNewBoardButton()}
+				</div>
+				<Divider className="w-full " />
+				<div className="flex flex-wrap gap-4">
+					{renderBoards()}
+				</div>
+				<Divider className="w-full" />
+				<div>
+					{renderSuggestionButton()}
+				</div>
 			</div>
 		)
 	}
 
 	return (
-		<div className='h-full p-4 flex flex-wrap gap-4'>
+		<div className='h-full p-4 flex flex-col gap-4'>
 			{!openBoardsQuery.isPending ?
 				renderPage()
 				:
@@ -95,10 +123,17 @@ export default function Boards() {
 					</div>
 				</>
 			}
+
 			<ModalBoardData
-				isOpen={isModalOpen}
-				onOpenChange={toggleModal}
+				isOpen={isModalNewBoardOpen}
+				onOpenChange={toggleModalNewBoard}
 			/>
+
+			<ModalSuggestion
+				isOpen={isModalSuggestionOpen}
+				onOpenChange={toggleModalSuggestion}
+			/>
+
 		</div>
 	)
 }
