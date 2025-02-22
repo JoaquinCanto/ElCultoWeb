@@ -33,3 +33,10 @@ export interface PersonPost {
 	estado: string,
 	quiereNarrar: boolean
 }
+
+export interface PersonUpdate {
+	nombre: string,
+	apodo: string,
+	fechaNacimiento: string,
+	quiereNarrar: boolean
+}

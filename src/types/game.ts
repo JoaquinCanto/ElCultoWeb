@@ -31,3 +31,14 @@ export interface GameUpdate {
 	estado?: boolean,
 	fechaBaja?: string
 }
+
+export interface TopGameResponse {
+	status: number,
+	total: number,
+	items: TopGameGet[]
+}
+
+export interface TopGameGet {
+	nombre: string,
+	cantidadInscripciones: number
+}
