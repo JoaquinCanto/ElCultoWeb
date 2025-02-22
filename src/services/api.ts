@@ -1,9 +1,10 @@
 import axios from "axios";
 import { BoardPost, BoardResponse, BoardSingleResponse } from "../types/board";
-import { PersonPost, PersonSingleResponse, PersonsResponse } from "../types/person";
-import { GamePost, GameResponse, GameSingleResponse, GameUpdate } from "../types/game";
+import { PersonPost, PersonSingleResponse, PersonsResponse, PersonUpdate } from "../types/person";
+import { GamePost, GameResponse, GameSingleResponse, GameUpdate, TopGameResponse } from "../types/game";
 import { PlacePost, PlaceResponse, PlaceSingleResponse, PlaceUpdate } from "../types/place";
 import { InscriptionPost, InscriptionResponse } from "../types/inscription";
+import { SuggestionPost, SuggestionResponse, TopSuggestionResponse } from "../types/suggestion";
 
 const BASE_URL = "http://localhost:3000";
 const axiosInstance = axios.create({ baseURL: BASE_URL });
@@ -54,6 +55,10 @@ export const createPerson = async (data: PersonPost) => {
 	await axiosInstance.post("persona", data);
 };
 
+export const updatePerson = async (personId: number, data: PersonUpdate) => {
+	await axiosInstance.put(`persona/${personId}`, data);
+}
+
 export const banPerson = async (personId: number, untilDate: string) => {
 	await axiosInstance.put(`persona/${personId}`, { estado: 'Inhabilitado', inhabilitadoHasta: untilDate });
 };
@@ -84,6 +89,10 @@ export const createGame = async (data: GamePost) => {
 
 export const updateGame = async (gameId: number, data: GameUpdate) => {
 	await axiosInstance.put(`juego/${gameId}`, data);
+};
+
+export const getTopGames = async () => {
+	return (await axiosInstance.get<TopGameResponse>("juego/top")).data;
 };
 
 export const unsubscribeGame = async (gameId: number) => {
@@ -126,4 +135,17 @@ export const createInscription = async (data: InscriptionPost) => {
 
 export const cancelInscription = async (inscriptionId: number) => {
 	await axiosInstance.put(`inscripcion/${inscriptionId}`, { borrado: true });
+};
+
+//--Suggestion
+export const getSuggestions = async () => {
+	return (await axiosInstance.get<SuggestionResponse>("sugerencia")).data;
+};
+
+export const getRelevantSuggestions = async () => {
+	return (await axiosInstance.get<TopSuggestionResponse>("sugerencia/relevante")).data;
+};
+
+export const createSuggestion = async (data: SuggestionPost) => {
+	await axiosInstance.post("sugerencia", data);
 };

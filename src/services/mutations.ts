@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usePersonStoreFill } from "../stores/personStoreFill";
 import { BoardPost } from "../types/board";
-import { PersonPost } from "../types/person";
+import { PersonPost, PersonUpdate } from "../types/person";
 import { InscriptionPost } from "../types/inscription";
 import { GamePost, GameUpdate } from "../types/game";
 import { PlacePost, PlaceUpdate } from "../types/place";
@@ -21,8 +21,12 @@ import {
 	updateBoard,
 	updateGame,
 	updatePlace,
-	unsubscribePlace
+	unsubscribePlace,
+	createSuggestion,
+	updatePerson,
+	getPersonById
 } from "./api";
+import { SuggestionPost } from "../types/suggestion";
 
 //-- Boards
 export function useCreateBoard() {
@@ -101,13 +105,52 @@ export function useCreatePerson() {
 				usePersonStoreFill(data.items);
 
 				// Also update the React Query cache
-				queryClient.setQueryData(["person", variables.email], data);
+				queryClient.setQueryData(["personById", variables.email], data);
 			} catch (error) {
 				console.error("Error fetching person after creation:", error);
 			}
 		},
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on create person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["persons"] });
+			}
+		},
 		onError: (error) => {
 			console.log("Error on create person: ", error);
+		},
+	})
+};
+
+export function useUpdatePerson() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ personId, data }: { personId: number, data: PersonUpdate }) => updatePerson(personId, data),
+		onSuccess: async (_, variables) => {
+			try {
+				const data = await getPersonById(variables.personId);
+				// Update Zustand state
+				usePersonStoreFill(data.items);
+
+				// Also update the React Query cache
+				queryClient.setQueryData(["personById", variables.personId], data);
+			} catch (error) {
+				console.error("Error fetching person after update:", error);
+			}
+		},
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on update person.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["personById"] });
+			}
+		},
+		onError: (error) => {
+			console.log("Error on update person: ", error);
 		},
 	})
 };
@@ -196,7 +239,7 @@ export function useCancelInscription() {
 	})
 };
 
-//--Games
+//-- Games
 export function useCreateGame() {
 	const queryClient = useQueryClient();
 
@@ -248,7 +291,7 @@ export function useUnsubscribeGame() {
 	})
 };
 
-//--Places
+//-- Places
 export function useCreatePlace() {
 	const queryClient = useQueryClient();
 
@@ -295,6 +338,24 @@ export function useUnsubscribePlace() {
 			} else {
 				await queryClient.invalidateQueries({ queryKey: ["allPlaces"] });
 				await queryClient.invalidateQueries({ queryKey: ["allowedPlaces"] });
+			}
+		},
+	})
+};
+
+//-- Suggestion
+export function useCreateSuggestion() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: SuggestionPost) => createSuggestion(data),
+		onSettled: async (_, error) => {
+			// console.log("settled");
+			if (error) {
+				console.log("Error on create suggestion.", error);
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ["suggestions"] });
+				await queryClient.invalidateQueries({ queryKey: ["relevantSuggestions"] });
 			}
 		},
 	})

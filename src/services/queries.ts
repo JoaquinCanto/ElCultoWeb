@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllGames, getAllowedGames, getAllowedPlaces, getAllPlaces, getBoard, getBoards, getBoardsNarrated, getGameById, getOpenBoards, getPersonByEmail, getPersonById, getPersons, getPlaceById, getPlayerInscriptions } from "./api";
+import { getAllGames, getAllowedGames, getAllowedPlaces, getAllPlaces, getBoard, getBoards, getBoardsNarrated, getGameById, getOpenBoards, getPersonByEmail, getPersonById, getPersons, getPlaceById, getPlayerInscriptions, getRelevantSuggestions, getSuggestions, getTopGames } from "./api";
 
 //-- Boards
 export function useBoards() {
@@ -77,6 +77,13 @@ export function useGameById(gameId: number) {
 	})
 };
 
+export function useTopGames() {
+	return useQuery({
+		queryKey: ["topGames"],
+		queryFn: () => getTopGames(),
+	})
+};
+
 //-- Places
 export function useAllPlaces() {
 	return useQuery({
@@ -104,5 +111,20 @@ export function usePlayerInscriptions(playerId: number) {
 	return useQuery({
 		queryKey: ["playerInscriptions"],
 		queryFn: () => getPlayerInscriptions(playerId),
+	})
+};
+
+//-- Suggestions
+export function useSuggestions() {
+	return useQuery({
+		queryKey: ["suggestions"],
+		queryFn: () => getSuggestions(),
+	})
+};
+
+export function useRelevantSuggestions() {
+	return useQuery({
+		queryKey: ["relevantSuggestions"],
+		queryFn: () => getRelevantSuggestions(),
 	})
 };
