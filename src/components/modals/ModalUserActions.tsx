@@ -55,7 +55,7 @@ export default function ModalUserActions({
 					label="El Usuario será inhabilitado hasta: "
 					labelPlacement="outside"
 					name="fechaInhabilitado"
-					value={date as unknown as import("@heroui/system/node_modules/@internationalized/date").DateValue}
+					value={date}//as unknown as import("@heroui/system/node_modules/@internationalized/date").DateValue
 					onChange={(newDate) => newDate && setDate(newDate)}
 					errorMessage={(value) => {
 						if (value.isInvalid) {

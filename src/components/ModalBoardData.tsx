@@ -107,13 +107,13 @@ export default function ModalBoardData(props: propTypes) {
 		if (!createBoardMutation.isPending && createBoardMutation.isSuccess) {
 			props.onOpenChange();
 		} else if (!createBoardMutation.isPending && createBoardMutation.isError) {
-			showAlert("Error al crear la mesa", null, "danger");
+			showAlert("¡Error al crear la mesa!", null, "danger");
 		}
 
 		if (!updateBoardMutation.isPending && updateBoardMutation.isSuccess) {
 			props.onOpenChange();
 		} else if (!updateBoardMutation.isPending && updateBoardMutation.isError) {
-			showAlert("Error al editar la mesa", null, "danger");
+			showAlert("¡Error al editar la mesa!", null, "danger");
 		}
 
 	}, [
@@ -214,7 +214,7 @@ export default function ModalBoardData(props: propTypes) {
 								label="Fecha de la Mesa: "
 								labelPlacement="outside"
 								name="fechaMesa"
-								value={date as unknown as import("@heroui/system/node_modules/@internationalized/date").DateValue}
+								value={date} //as unknown as import("@heroui/system/node_modules/@internationalized/date").DateValue
 								onChange={(newDate) => newDate && setDate(newDate)}
 								errorMessage={(value) => {
 									if (value.isInvalid) {
