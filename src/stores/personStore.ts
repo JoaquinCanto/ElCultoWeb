@@ -8,9 +8,9 @@ type State = {
 	fechaNacimiento: string;
 	email: string;
 	tipo: string;
+	estado: string;
 	quiereNarrar: boolean;
-	habilitado: boolean;
-	desabilitadoHasta?: string;
+	inhabilitadoHasta?: string;
 };
 
 type Action = {
@@ -20,9 +20,9 @@ type Action = {
 	updateFechaNacimiento: (fechaNacimiento: State['fechaNacimiento']) => void;
 	updateEmail: (email: State['email']) => void;
 	updateTipo: (tipo: State['tipo']) => void;
+	updateEstado: (estado: State['estado']) => void;
 	updateQuiereNarrar: (quiereNarrar: State['quiereNarrar']) => void;
-	updateHabilitado: (estado: State['habilitado']) => void;
-	updateDesabilitadoHasta: (desabilitadoHasta: State['desabilitadoHasta']) => void;
+	updateInhabilitadoHasta: (inhabilitadoHasta: State['inhabilitadoHasta']) => void;
 	clearStore: () => void;
 };
 
@@ -35,18 +35,18 @@ const usePersonStore = create<State & Action>()(
 			fechaNacimiento: '',
 			email: '',
 			tipo: '',
+			estado: '',
 			quiereNarrar: false,
-			habilitado: true,
-			desabilitadoHasta: '',
+			inhabilitadoHasta: '',
 			updateId: (id) => set(() => ({ id })),
 			updateNombre: (nombre) => set(() => ({ nombre })),
 			updateApodo: (apodo) => set(() => ({ apodo })),
 			updateFechaNacimiento: (fechaNacimiento) => set(() => ({ fechaNacimiento })),
 			updateEmail: (email) => set(() => ({ email })),
 			updateTipo: (tipo) => set(() => ({ tipo })),
+			updateEstado: (estado) => set(() => ({ estado })),
 			updateQuiereNarrar: (quiereNarrar) => set(() => ({ quiereNarrar })),
-			updateHabilitado: (habilitado) => set(() => ({ habilitado })),
-			updateDesabilitadoHasta: (desabilitadoHasta) => set(() => ({ desabilitadoHasta })),
+			updateInhabilitadoHasta: (inhabilitadoHasta) => set(() => ({ inhabilitadoHasta })),
 			clearStore: () =>
 				set(() => ({
 					id: -1,
@@ -55,8 +55,8 @@ const usePersonStore = create<State & Action>()(
 					fechaNacimiento: '',
 					email: '',
 					tipo: '',
+					estado: '',
 					quiereNarrar: false,
-					habilitado: true,
 					desabilitadoHasta: '',
 				})),
 		}),

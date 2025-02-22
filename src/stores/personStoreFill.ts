@@ -9,8 +9,9 @@ export function usePersonStoreFill(data: PersonGet) {
 		updateFechaNacimiento,
 		updateEmail,
 		updateTipo,
-		updateHabilitado,
-		updateDesabilitadoHasta
+		updateEstado,
+		updateQuiereNarrar,
+		updateInhabilitadoHasta
 	} = usePersonStore.getState();
 
 	updateId(data.idPersona);
@@ -19,6 +20,7 @@ export function usePersonStoreFill(data: PersonGet) {
 	updateFechaNacimiento(data.fechaNacimiento);
 	updateEmail(data.email);
 	updateTipo(data.tipo);
-	updateHabilitado(data.habilitado);
-	updateDesabilitadoHasta(data.desabilitadoHasta);
+	updateEstado(data.estado);
+	updateQuiereNarrar(data.quiereNarrar);
+	updateInhabilitadoHasta(data.inhabilitadoHasta);
 }
