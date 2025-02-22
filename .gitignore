@@ -24,3 +24,6 @@ README.md
 *.njsproj
 *.sln
 *.sw?
+
+#Placeholder components
+src/components/Placeholder.tsx
