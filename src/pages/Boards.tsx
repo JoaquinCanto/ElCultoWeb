@@ -28,18 +28,7 @@ export default function Boards() {
 			return openBoardsQuery.data.items.map((board: BoardGet) => (
 				<Game
 					key={board.idMesa}
-					idMesa={board.idMesa}
-					juego={board.juego.nombre}
-					narrador={board.narrador.apodo}
-					fecha={board.fechaHora}
-					lugar={board.lugar}
-					descripcion={board.juego.descripcion}
-					notas={board.notas}
-					minJugadores={board.cupoMin}
-					maxJugadores={board.cupoMax}
-					cantJugadores={board.jugadores.length}
-					inscriptos={board.jugadores}
-					updateMesas={openBoardsQuery.refetch}
+					board={board}
 				/>
 			))
 		}

@@ -1,26 +1,17 @@
 import { FaPlus, FaMinus } from 'react-icons/fa6';
-import { Button, Card, CardHeader, CardBody, CardFooter, Progress, Divider } from "@heroui/react";
+import { Button, Card, CardHeader, CardBody, CardFooter, Progress, Divider, Modal, ModalContent, ModalFooter, ModalBody, ModalHeader, useDisclosure } from "@heroui/react";
 import usePersonaStore from '../stores/personStore';
 import { useEffect, useState } from 'react';
 import { useCancelBoard, useCreateInscription, useCancelInscription } from '../services/mutations';
 import { DeleteIcon, EditIcon } from './Icons';
+import { BoardGet } from '../types/board';
+import ModalBoardData from './ModalBoardData';
 
-interface propTypes {
-	idMesa: number,
-	juego: string,
-	narrador: string,
-	fecha: string,
-	lugar: any,
-	descripcion: string,
-	notas: string,
-	minJugadores: number,
-	maxJugadores: number,
-	cantJugadores: number,
-	inscriptos: any,
-	updateMesas: any
+interface GameProps {
+	board: BoardGet;
 }
 
-export default function Game(props: propTypes) {
+export default function Game({ board }: GameProps) {
 
 	const {
 		id,
@@ -29,9 +20,11 @@ export default function Game(props: propTypes) {
 
 	const [isInscribed, setIsInscribed] = useState<boolean>();
 	const [isNarrator, setIsNarrator] = useState<boolean>();
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const [isBoardDataOpen, setIsBoardDataOpen] = useState(false);
 
 	function checkNarrator() {
-		if (props.narrador === apodo) {
+		if (board.narrador.apodo === apodo) {
 			setIsNarrator(true);
 		}
 		else {
@@ -46,13 +39,13 @@ export default function Game(props: propTypes) {
 
 	function checkInscription() {
 
-		if (!props.inscriptos || props.inscriptos.length === 0) {
+		if (!board.jugadores || board.jugadores.length === 0) {
 			setIsInscribed(false);
 			return;
 		}
 
 		if (id !== -1) {
-			if (props.inscriptos.find((jugador: any) => jugador.idJugador === id)) {
+			if (board.jugadores.find((jugador: any) => jugador.idJugador === id)) {
 				setIsInscribed(true);
 			}
 			else {
@@ -62,21 +55,21 @@ export default function Game(props: propTypes) {
 	}
 
 	useEffect(() => {
-		if (props.inscriptos) {
-			console.log("idMesa: ", props.idMesa, " isInscribed: ", isInscribed);
+		if (board.jugadores) {
 			checkInscription();
 		}
+
 		checkNarrator();
 
 		if (!createInscriptionMutation.isPending && createInscriptionMutation.isSuccess) {
-			setIsInscribed(true);
+			checkInscription();
 		}
 		if (!cancelInscriptionMutation.isPending && cancelInscriptionMutation.isSuccess) {
-			setIsInscribed(false);
+			checkInscription();
 		}
 
 	}, [
-		props.inscriptos,
+		board.jugadores,
 		createInscriptionMutation.isPending,
 		createInscriptionMutation.isSuccess,
 		cancelInscriptionMutation.isPending,
@@ -87,62 +80,19 @@ export default function Game(props: propTypes) {
 	const inscription = () => {
 		createInscriptionMutation.mutate({
 			idJugador: id,
-			idMesa: props.idMesa,
+			idMesa: board.idMesa,
 			baja: false
 		})
 	}
 
-	// async function inscription() {
-	// 	try {
-	// 		await axios.post("http://localhost:3000/inscripcion", {
-	// 			idJugador: id,
-	// 			idMesa: props.idMesa,
-	// 			baja: false
-	// 		})
-	// 			.then(response => {
-	// 				// console.log("Response: ", response)
-	// 				if (response.status === 201) {
-	// 					setIsInscribed(true);
-	// 					props.updateMesas();
-	// 				}
-	// 			})
-	// 			.catch((error) => {
-	// 				console.error('Error posting data:', error);
-	// 			});
-	// 	}
-	// 	catch (error) {
-	// 		console.log("Response Axios error: ", error);
-	// 	};
-	// }
-
 	const unsubscribe = () => {
-		const idInscripcion = props.inscriptos.find((jugador: any) => jugador.idJugador === id);
+		const inscripcion = board.jugadores.find((jugador: any) => jugador.idJugador === id);
 
-		cancelInscriptionMutation.mutateAsync(idInscripcion);
+		cancelInscriptionMutation.mutate(inscripcion.idInscripcion);
 	}
 
-	// async function unsubscribe() {
-	// 	const idInscripcion = props.inscriptos.find((jugador: any) => jugador.idJugador === id).idInscripcion;
-
-	// 	try {
-	// 		await axios.delete(`http://localhost:3000/inscripcion/${idInscripcion.toString()}`)
-	// 			.then(response => {
-	// 				// console.log("Response: ", response)
-	// 				if (response.status === 200) {
-	// 					setIsInscribed(false);
-	// 					props.updateMesas();
-	// 				}
-	// 			})
-	// 			.catch((error) => {
-	// 				console.error('Error deleting inscripcion:', error);
-	// 			});
-	// 	}
-	// 	catch (error) {
-	// 		console.log("Response Axios error: ", error);
-	// 	};
-	// }
 	const cancelBoard = async () => {
-		const idMesa = props.idMesa;
+		const idMesa = board.idMesa;
 
 		cancelBoardMutation.mutateAsync(idMesa);
 	}
@@ -155,7 +105,7 @@ export default function Game(props: propTypes) {
 						isIconOnly
 						color='primary'
 						variant='bordered'
-					// onPress={toggleModal} editar mesa
+						onPress={() => setIsBoardDataOpen(true)}
 					>
 						<EditIcon />
 					</Button>
@@ -163,7 +113,7 @@ export default function Game(props: propTypes) {
 						isIconOnly
 						color='danger'
 						variant='ghost'
-						onPress={cancelBoard}
+						onPress={onOpen}
 					>
 						<DeleteIcon />
 					</Button>
@@ -175,6 +125,7 @@ export default function Game(props: propTypes) {
 				<Button color='primary'
 					variant='ghost'
 					startContent={<FaMinus />}
+					isDisabled={cancelInscriptionMutation.isPending}
 					onPress={unsubscribe}
 				>
 					Desinscribirse
@@ -186,6 +137,7 @@ export default function Game(props: propTypes) {
 				<Button color='primary'
 					variant='ghost'
 					startContent={<FaPlus />}
+					isDisabled={createInscriptionMutation.isPending}
 					onPress={inscription}
 				>
 					Unirse
@@ -195,39 +147,84 @@ export default function Game(props: propTypes) {
 	}
 
 	return (
-		<Card className='w-screen sm:w-80'>
-			<CardHeader>
-				<div>
-					<h3 className='font-bold'>{props.juego}</h3>
-					<p className='font-normal text-neutral-400'>Narrado por: {props.narrador}</p>
-				</div>
-			</CardHeader>
+		<>
+			<Card className='w-screen sm:w-80'>
+				<CardHeader>
+					<div>
+						<h3 className='font-bold'>{board.juego.nombre}</h3>
+						<p className='font-normal text-neutral-400'>Narrado por: {board.narrador.apodo}</p>
+					</div>
+				</CardHeader>
 
-			<Divider />
+				<Divider />
 
-			<CardBody >
-				<p>Cuándo: {(new Date(props.fecha)).toLocaleString().slice(0, 17).concat(" hs.")}</p>
-				<p>Dónde: {props.lugar.nombre}, {props.lugar.direccion}</p>
-				<p>Descripción: {props.descripcion}</p>
-				<p>Cupos: Minimo {props.minJugadores} - Máximo {props.maxJugadores}</p>
-				<p>Notas: {props.notas}</p>
-			</CardBody>
+				<CardBody >
+					<p>Cuándo: {(new Date(board.fechaHora)).toLocaleString().slice(0, 17).concat(" hs.")}</p>
+					<p>Dónde: {board.lugar.nombre}, {board.lugar.direccion}</p>
+					<p>Descripción: {board.juego.descripcion}</p>
+					<p>Cupos: Minimo {board.cupoMin} - Máximo {board.cupoMax}</p>
+					<p>Notas: {board.notas}</p>
+				</CardBody>
 
-			<Divider />
+				<Divider />
 
-			<CardFooter>
-				<Progress className='w-1/2 flex flex-col'
-					size='md'
-					color='secondary'
-					label={`Reservas: ${props.cantJugadores}/${props.maxJugadores}`}
-					value={props.cantJugadores}
-					maxValue={props.maxJugadores}
+				<CardFooter>
+					<Progress className='w-1/2 flex flex-col'
+						size='md'
+						color='secondary'
+						label={`Reservas: ${board.jugadores.length}/${board.cupoMax}`}
+						value={board.jugadores.length}
+						maxValue={board.cupoMax}
+					/>
+
+					<div className='w-1/2 flex justify-center'>
+						{renderButtons()}
+					</div>
+				</CardFooter>
+			</Card>
+
+			<Modal
+				className="dark text-foreground bg-background"
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				isDismissable={false}
+				isKeyboardDismissDisabled={true}
+				placement="center"
+				backdrop="blur"
+			>
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1 text-red-500">Cancelar Mesa</ModalHeader>
+							<ModalBody>
+								<p>
+									¿Seguro que quieres cancelar la mesa?
+								</p>
+							</ModalBody>
+							<ModalFooter>
+								<Button color="danger" variant="light" onPress={onClose}>
+									Cerrar
+								</Button>
+								<Button
+									color="success"
+									onPress={cancelBoard}
+									isDisabled={cancelBoardMutation.isPending}
+								>
+									{cancelBoardMutation.isPending ? "Cancelando..." : "Cancelar"}
+								</Button>
+							</ModalFooter>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
+
+			{isBoardDataOpen && (
+				<ModalBoardData
+					isOpen={isBoardDataOpen}
+					onOpenChange={() => setIsBoardDataOpen(false)}
+					boardToEdit={board}
 				/>
-
-				<div className='w-1/2 flex justify-center'>
-					{renderButtons()}
-				</div>
-			</CardFooter>
-		</Card>
+			)}
+		</>
 	)
 }
