@@ -7,7 +7,7 @@ import { InscriptionPost, InscriptionResponse } from "../types/inscription";
 import { SuggestionPost, SuggestionResponse, TopSuggestionResponse } from "../types/suggestion";
 
 // const BASE_URL = "http://localhost:3000";
-const BASE_URL = "https://el-culto-back.vercel.app/";
+const BASE_URL = "https://elcultoback.onrender.com";
 const axiosInstance = axios.create({ baseURL: BASE_URL });
 
 //-- Boards
