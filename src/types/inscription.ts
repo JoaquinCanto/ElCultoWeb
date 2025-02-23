@@ -31,5 +31,5 @@ export interface InscriptionGet {
 export interface InscriptionPost {
 	idJugador: number,
 	idMesa: number,
-	borrado: boolean
+	baja: boolean
 }

@@ -60,7 +60,6 @@ export default function Game(props: propTypes) {
 				setIsInscribed(false);
 			}
 		}
-		// console.log("idinscripcion: ", props.inscriptos.find((jugador: any) => jugador.idJugador === id).idInscripcion)
 	}
 
 	useEffect(() => {
@@ -86,66 +85,67 @@ export default function Game(props: propTypes) {
 		isInscribed, setIsInscribed, checkInscription
 	]);
 
-	// const inscription = async () => {
-	// 	createInscriptionMutation.mutate({
-	// 		idJugador: id,
-	// 		idMesa: props.idMesa
-	// 	})
-	// }
-	async function inscription() {
-		try {
-			await axios.post("http://localhost:3000/inscripcion", {
-				idJugador: id,
-				idMesa: props.idMesa,
-				baja: false
-			})
-				.then(response => {
-					// console.log("Response: ", response)
-					if (response.status === 201) {
-						setIsInscribed(true);
-						props.updateMesas();
-					}
-				})
-				.catch((error) => {
-					console.error('Error posting data:', error);
-				});
-		}
-		catch (error) {
-			console.log("Response Axios error: ", error);
-		};
+	const inscription = () => {
+		createInscriptionMutation.mutate({
+			idJugador: id,
+			idMesa: props.idMesa,
+			baja: false
+		})
 	}
 
-	// const unsubscribe = async () => {
-	// 	const idInscripcion = props.inscriptos.find((jugador: any) => jugador.idJugador === id);
-
-	// 	cancelInscriptionMutation.mutateAsync(idInscripcion);
+	// async function inscription() {
+	// 	try {
+	// 		await axios.post("http://localhost:3000/inscripcion", {
+	// 			idJugador: id,
+	// 			idMesa: props.idMesa,
+	// 			baja: false
+	// 		})
+	// 			.then(response => {
+	// 				// console.log("Response: ", response)
+	// 				if (response.status === 201) {
+	// 					setIsInscribed(true);
+	// 					props.updateMesas();
+	// 				}
+	// 			})
+	// 			.catch((error) => {
+	// 				console.error('Error posting data:', error);
+	// 			});
+	// 	}
+	// 	catch (error) {
+	// 		console.log("Response Axios error: ", error);
+	// 	};
 	// }
 
-	async function unsubscribe() {
-		const idInscripcion = props.inscriptos.find((jugador: any) => jugador.idJugador === id).idInscripcion;
+	const unsubscribe = () => {
+		const idInscripcion = props.inscriptos.find((jugador: any) => jugador.idJugador === id);
 
-		try {
-			await axios.delete(`http://localhost:3000/inscripcion/${idInscripcion.toString()}`)
-				.then(response => {
-					// console.log("Response: ", response)
-					if (response.status === 200) {
-						setIsInscribed(false);
-						props.updateMesas();
-					}
-				})
-				.catch((error) => {
-					console.error('Error deleting inscripcion:', error);
-				});
-		}
-		catch (error) {
-			console.log("Response Axios error: ", error);
-		};
+		cancelInscriptionMutation.mutateAsync(idInscripcion);
 	}
+
+	// async function unsubscribe() {
+	// 	const idInscripcion = props.inscriptos.find((jugador: any) => jugador.idJugador === id).idInscripcion;
+
+	// 	try {
+	// 		await axios.delete(`http://localhost:3000/inscripcion/${idInscripcion.toString()}`)
+	// 			.then(response => {
+	// 				// console.log("Response: ", response)
+	// 				if (response.status === 200) {
+	// 					setIsInscribed(false);
+	// 					props.updateMesas();
+	// 				}
+	// 			})
+	// 			.catch((error) => {
+	// 				console.error('Error deleting inscripcion:', error);
+	// 			});
+	// 	}
+	// 	catch (error) {
+	// 		console.log("Response Axios error: ", error);
+	// 	};
+	// }
 	const cancelBoard = async () => {
 		const idMesa = props.idMesa;
 
 		cancelBoardMutation.mutateAsync(idMesa);
-
 	}
 
 	const renderButtons = () => {
