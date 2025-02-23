@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { Button, Card, CardHeader, CardBody, CardFooter, Progress, Divider } from "@heroui/react";
 import usePersonaStore from '../stores/personStore';
