@@ -6,7 +6,7 @@ import { PlacePost, PlaceResponse, PlaceSingleResponse, PlaceUpdate } from "../t
 import { InscriptionPost, InscriptionResponse } from "../types/inscription";
 import { SuggestionPost, SuggestionResponse, TopSuggestionResponse } from "../types/suggestion";
 
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "http://localhost:10000";
 const BASE_URL = "https://elcultoback.onrender.com";
 const axiosInstance = axios.create({ baseURL: BASE_URL });
 
@@ -135,7 +135,7 @@ export const createInscription = async (data: InscriptionPost) => {
 };
 
 export const cancelInscription = async (inscriptionId: number) => {
-	await axiosInstance.put(`inscripcion/${inscriptionId}`, { borrado: true });
+	await axiosInstance.put(`inscripcion/${inscriptionId}`, { baja: true });
 };
 
 //--Suggestion

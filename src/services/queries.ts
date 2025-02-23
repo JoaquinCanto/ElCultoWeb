@@ -44,6 +44,7 @@ export function usePersonById(personId: number) {
 	return useQuery({
 		queryKey: ["personById", personId],
 		queryFn: () => getPersonById(personId),
+		enabled: !!personId,
 	})
 };
 
@@ -51,7 +52,7 @@ export function usePersonByEmail(email: string) {
 	return useQuery({
 		queryKey: ["personByEmail", email],
 		queryFn: () => getPersonByEmail(email),
-		// enabled: !!email, // Only run when email is available
+		enabled: !!email, // Only run when email is available
 	});
 };
 

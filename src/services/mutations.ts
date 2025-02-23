@@ -218,6 +218,7 @@ export function useCreateInscription() {
 				console.log("Error on create inscripcion:", error);
 			} else {
 				await queryClient.invalidateQueries({ queryKey: ["openBoards"] });
+				await queryClient.invalidateQueries({ queryKey: ["playerInscriptions"] });
 			}
 		},
 	})
@@ -233,6 +234,7 @@ export function useCancelInscription() {
 			if (error) {
 				console.log("Error on cancel inscripcion:", error);
 			} else {
+				await queryClient.invalidateQueries({ queryKey: ["openBoards"] });
 				await queryClient.invalidateQueries({ queryKey: ["playerInscriptions"] });
 			}
 		},

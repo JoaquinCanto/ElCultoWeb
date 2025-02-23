@@ -16,12 +16,12 @@ export default function LogIn() {
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
 	const navigate = useNavigate();
-
 	const queryClient = useQueryClient();
-	const [email, setEmail] = useState<string | null>(null);
-	const personByEmailQuery = usePersonByEmail(email ?? "");
+
+	const [email, setEmail] = useState<string>("");
+
+	const personByEmailQuery = usePersonByEmail(email);
 
 	useEffect(() => {
 		if (personByEmailQuery.data && !personByEmailQuery.isPending) {
@@ -31,33 +31,50 @@ export default function LogIn() {
 		else if (personByEmailQuery.error) {
 			onOpen(); // Open modal on error
 		}
-	}, [personByEmailQuery.data, personByEmailQuery.error, personByEmailQuery.isPending]);
+
+	}, [email,
+		personByEmailQuery.data,
+		personByEmailQuery.error,
+		personByEmailQuery.isPending
+	]);
 
 	async function onSubmit(e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) {
 		e.preventDefault();
 		const formData = Object.fromEntries(new FormData(e.currentTarget));
 
 		try {
-			const { data, error } = await supabase.auth.signInWithPassword({
+			const { error } = await supabase.auth.signInWithPassword({
 				email: formData.email.toString(),
 				password: formData.contrasena.toString(),
 			})
 
-			console.log("Data: ", data);
-			console.log("Error1: ", error);
-			// setErr(error);
+			// console.log("Sign-in data:", data);
+			console.log("Sign-in error:", error);
+
+			if (error) {
+				onOpen(); // show error modal if sign-in failed
+				return;
+			}
+
+			// Update the email state so the query fires.
+			setEmail(formData.email.toString());
+			// Invalidate the query to ensure fresh data.
+			queryClient.invalidateQueries({ queryKey: ["personByEmail", formData.email.toString()] });
+			// Optionally, trigger a refetch:
+			personByEmailQuery.refetch();
 		}
 		catch (error) {
 			console.log("Error2: ", error);
 		}
-
-		setEmail(formData.email.toString());
-		queryClient.invalidateQueries({ queryKey: ["personByEmail", formData.email.toString()] });
 	};
 
 	return (
 		<>
-			<Form validationBehavior="native" onSubmit={onSubmit} className='h-full p-4 flex flex-wrap gap-4'>
+			<Form
+				validationBehavior="native"
+				onSubmit={onSubmit}
+				className='h-full p-4 flex flex-wrap gap-4'
+			>
 				<Input
 					isRequired
 					isClearable
