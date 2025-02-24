@@ -11,6 +11,7 @@ import MyBoards from './pages/MyBoards';
 import ControlPanel from './pages/ControlPanel';
 import Reports from './pages/Reports';
 import MyProfile from './pages/MyProfile';
+import WeAre from './pages/WeAre';
 
 function App() {
 	return (
@@ -22,8 +23,9 @@ function App() {
 						<Route path={PublicRoutes.MESAS} element={<Boards />} />
 						<Route path={PublicRoutes.REGISTRARSE} element={<Register />} />
 						<Route path={PublicRoutes.INGRESAR} element={<LogIn />} />
-						{/* <Route path={PublicRoutes.NOSOTROS} element={< />} />*/}
-						{/* <Route path={PublicRoutes.FAQ} element={< />} /> */}
+						<Route path={PublicRoutes.NOSOTROS} element={< WeAre />} />
+						<Route path={PublicRoutes.EVENTOS} element={< WeAre />} />
+						<Route path={PublicRoutes.FAQ} element={< WeAre />} />
 
 						<Route element={<AuthGuard />}>
 							<Route path={PrivateRoutes.MISMESAS} element={<MyBoards />} />

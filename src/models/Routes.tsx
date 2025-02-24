@@ -5,6 +5,7 @@ export enum PublicRoutes {
 	REGISTRARSE = "/registrarse",
 	INGRESAR = "/ingresar",
 	NOSOTROS = "/nosotros",
+	EVENTOS = "/eventos",
 	FAQ = "/faq",
 
 }
