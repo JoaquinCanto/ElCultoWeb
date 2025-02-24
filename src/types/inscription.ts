@@ -10,6 +10,10 @@ export interface InscriptionGet {
 	idMesa: number,
 	asistencia: string,
 	fechaInscripcion: string,
+	baja: boolean,
+	jugador: {
+		apodo: string
+	}
 	mesa: {
 		estado: string,
 		fechaHora: string,

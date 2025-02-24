@@ -1,23 +1,21 @@
 import { useBoard } from "../../services/queries";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Skeleton } from "@heroui/react";
 
-interface ModalActionProps {
-	title: string;
+interface ModalInscriptionProps {
 	type: "view" | "ban" | "unban" | "unsubscribe" | "add" | "edit" | "cancel" | null;
+	inscriptionId: number;
 	boardId: number;
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
-	onConfirm: () => void;
+	onConfirm: (inscripcionId?: string) => void;
 }
 
-function renderModal(type: ModalActionProps["type"], boardQuery: ReturnType<typeof useBoard>) {
+function renderModal(type: ModalInscriptionProps["type"], boardQuery: ReturnType<typeof useBoard>) {
 	switch (type) {
 		case "view":
 			return renderModalView(boardQuery);
 		case "unsubscribe":
 			return renderModalUnsubscribe();
-		case "cancel":
-			return renderModalCancel();
 		default:
 			return null;
 	}
@@ -54,21 +52,15 @@ function renderModalView(boardQuery: ReturnType<typeof useBoard>) {
 
 function renderModalUnsubscribe() {
 	return (
-		<p>¿Quieres desinscribirte de la mesa?</p>
-	)
-}
-
-function renderModalCancel() {
-	return (
-		<p>¿Quieres cancelar la mesa?</p>
+		<p>¿Quieres desinscribir a esta persona de la mesa?</p>
 	)
 }
 
 
-export default function ModalAction({ title, isOpen, onOpenChange, onConfirm, boardId, type }: ModalActionProps) {
+export default function ModalAction({ isOpen, onOpenChange, onConfirm, inscriptionId, boardId, type }: ModalInscriptionProps) {
 
 	const boardQuery = useBoard(boardId ?? 0);
-	console.log("type: ", type)
+
 	return (
 		<>
 			<Modal
@@ -80,7 +72,9 @@ export default function ModalAction({ title, isOpen, onOpenChange, onConfirm, bo
 					{(onClose) => (
 						<>
 							<ModalHeader className={(type === "unsubscribe" || type === "cancel") ? "flex flex-col gap-1 text-red-500" : "flex flex-col gap-1"}>
-								{title}
+								{type === "view" ?
+									"Mesa" :
+									"Cancelar Inscripción"}
 							</ModalHeader>
 							<ModalBody>
 								{renderModal(type, boardQuery)}
@@ -91,7 +85,9 @@ export default function ModalAction({ title, isOpen, onOpenChange, onConfirm, bo
 										Cancelar
 									</Button>
 								}
-								<Button color="primary" onPress={() => { onConfirm(); onClose(); }}>
+								<Button
+									color="primary"
+									onPress={type === "view" ? () => { onConfirm(); onClose(); } : () => { onConfirm(inscriptionId.toString()); onClose(); }}>
 									Confirmar
 								</Button>
 							</ModalFooter>

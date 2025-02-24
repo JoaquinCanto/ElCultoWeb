@@ -126,6 +126,10 @@ export const unsubscribePlace = async (placeId: number) => {
 };
 
 //-- Inscription
+export const getInscriptions = async () => {
+	return (await axiosInstance.get<InscriptionResponse>("inscripcion")).data;
+}
+
 export const getPlayerInscriptions = async (playerId: number) => {
 	return (await axiosInstance.get<InscriptionResponse>(`inscripcion/jugador/${playerId}`)).data;
 };

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllGames, getAllowedGames, getAllowedPlaces, getAllPlaces, getBoard, getBoards, getBoardsNarrated, getGameById, getOpenBoards, getPersonByEmail, getPersonById, getPersons, getPlaceById, getPlayerInscriptions, getRelevantSuggestions, getSuggestions, getTopGames } from "./api";
+import { getAllGames, getAllowedGames, getAllowedPlaces, getAllPlaces, getBoard, getBoards, getBoardsNarrated, getGameById, getInscriptions, getOpenBoards, getPersonByEmail, getPersonById, getPersons, getPlaceById, getPlayerInscriptions, getRelevantSuggestions, getSuggestions, getTopGames } from "./api";
 
 //-- Boards
 export function useBoards() {
@@ -108,6 +108,13 @@ export function usePlaceById(placeId: number) {
 };
 
 //-- Inscriptions
+export function useInscriptions() {
+	return useQuery({
+		queryKey: ["inscriptions"],
+		queryFn: () => getInscriptions(),
+	})
+};
+
 export function usePlayerInscriptions(playerId: number) {
 	return useQuery({
 		queryKey: ["playerInscriptions"],

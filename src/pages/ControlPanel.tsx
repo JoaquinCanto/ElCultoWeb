@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { Button, ButtonGroup } from "@heroui/react"
+import { Button, ButtonGroup, Tooltip } from "@heroui/react"
 import BoardsDetails from "../components/details/BoardsDetails";
 import UsersDetails from "../components/details/UsersDetails";
+import InscriptionsDetails from "../components/details/InscriptionsDetails";
 import GamesDetails from "../components/details/GamesDetails";
 import PlacesDetails from "../components/details/PlacesDetails";
 import ModalGameActions from "../components/modals/ModalGameActions";
 import { useCreateGame, useCreatePlace } from "../services/mutations";
 import ModalPlaceActions from "../components/modals/ModalPlaceActions";
+import { GiSpellBook } from "react-icons/gi";
+import { MdPlace } from "react-icons/md";
 
 const ControlPanel = () => {
-	type ActiveView = "boards" | "users" | "games" | "places";
+	type ActiveView = "boards" | "users" | "games" | "places" | "inscriptions";
 	const [activeView, setActiveView] = useState<ActiveView>("boards");
 
 	const [isGameModalOpen, setGameModalOpen] = useState(false);
@@ -49,36 +52,54 @@ const ControlPanel = () => {
 	};
 
 	return (
-		<div>
-			<ButtonGroup variant="ghost">
-				<Button onPress={() => setActiveView("boards")}>Mesas</Button>
-				<Button onPress={() => setActiveView("users")}>Usuarios</Button>
-				<Button onPress={() => setActiveView("games")}>Juegos</Button>
-				<Button onPress={() => setActiveView("places")}>Lugares</Button>
-			</ButtonGroup>
+		<div className="flex flex-col gap-4 p-4">
+			<div className="flex flex-row justify-center gap-4">
+				<ButtonGroup variant="ghost">
+					<Button onPress={() => setActiveView("boards")}>Mesas</Button>
+					<Button onPress={() => setActiveView("users")}>Usuarios</Button>
+					<Button onPress={() => setActiveView("inscriptions")}>Inscripciones</Button>
+					<Button onPress={() => setActiveView("games")}>Juegos</Button>
+					<Button onPress={() => setActiveView("places")}>Lugares</Button>
+				</ButtonGroup>
+
+				{activeView === "games" &&
+					<Tooltip
+						content="Nuevo Juego"
+						color="success"
+					>
+						<Button
+							// className="w-10 h-10"
+							isIconOnly
+							color="success"
+							variant="ghost"
+							onPress={() => openGameModal("add")}
+						>
+							<GiSpellBook />
+						</Button>
+					</Tooltip>
+				}
+				{activeView === "places" &&
+					<Tooltip
+						content="Nuevo Lugar"
+						color="success"
+					>
+						<Button
+							isIconOnly
+							color="success"
+							variant="ghost"
+							onPress={() => openPlaceModal("add")}
+						>
+							<MdPlace />
+						</Button>
+					</Tooltip>
+				}
+			</div>
 			<div>
 				{activeView === "boards" && <BoardsDetails />}
 				{activeView === "users" && <UsersDetails />}
-				{activeView === "games" &&
-					<div>
-						<GamesDetails />
-						<Button
-							onPress={() => openGameModal("add")}
-						>
-							Nuevo Juego
-						</Button>
-					</div>
-				}
-				{activeView === "places" &&
-					<div>
-						<PlacesDetails />
-						<Button
-							onPress={() => openPlaceModal("add")}
-						>
-							Nuevo Lugar
-						</Button>
-					</div>
-				}
+				{activeView === "inscriptions" && <InscriptionsDetails />}
+				{activeView === "games" && <GamesDetails />}
+				{activeView === "places" && <PlacesDetails />}
 			</div>
 
 			{isGameModalOpen && (
