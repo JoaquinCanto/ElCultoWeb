@@ -1,5 +1,6 @@
 import { FaInstagram } from "react-icons/fa6";
-import { Button, Card, CardBody, Image, Link } from "@heroui/react";
+import { BiLogoDiscordAlt } from "react-icons/bi";
+import { Button, Card, CardBody, Image, Link, Tooltip } from "@heroui/react";
 import irLogo from "../assets/IR_Logo_v2.png";
 
 export default function Footer() {
@@ -27,6 +28,27 @@ export default function Footer() {
 						</Button>
 					</Link>
 				</div>
+
+				<Tooltip
+					className="dark bg-background text-indigo-500 "
+					content="Unite a nuestro Discord"
+				>
+					<Link
+						className="flex justify-center w-10 h-10 p-0 text-indigo-500"
+						isBlock
+						isExternal
+						href="https://discord.com/invite/cTd9VQhvAz">
+						<Button
+							className="text-indigo-500"
+							isIconOnly
+							variant="ghost"
+						>
+							<BiLogoDiscordAlt />
+						</Button>
+					</Link>
+				</Tooltip>
+
+
 				<div>
 					{/* Todos Los Derechos Reservados © 2025 Canto Inc. */}
 					<Card>
