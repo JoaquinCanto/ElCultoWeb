@@ -11,7 +11,7 @@ import { MdTableRestaurant } from "react-icons/md";
 
 export default function Boards() {
 
-	const { tipo } = usePersonStore();
+	const { id, tipo } = usePersonStore();
 
 	const [isModalNewBoardOpen, setIsModalNewBoardOpen] = useState(false);
 	const toggleModalNewBoard = () => setIsModalNewBoardOpen(!isModalNewBoardOpen);
@@ -36,21 +36,19 @@ export default function Boards() {
 	}
 
 	const renderNewBoardButton = () => {
-		if (tipo !== "Jugador") {
-			return (
-				<div className="flex flex-col items-center gap-2">
-					<Button
-						className="flex w-40"
-						color='primary'
-						variant='ghost'
-						startContent={<MdTableRestaurant />}
-						onPress={toggleModalNewBoard}
-					>
-						Agregar Mesa
-					</Button>
-				</div>
-			)
-		}
+		return (
+			<div className="flex flex-col items-center gap-2">
+				<Button
+					className="flex w-40"
+					color='primary'
+					variant='ghost'
+					startContent={<MdTableRestaurant />}
+					onPress={toggleModalNewBoard}
+				>
+					Agregar Mesa
+				</Button>
+			</div>
+		)
 	}
 
 	const renderSuggestionButton = () => {
@@ -72,10 +70,12 @@ export default function Boards() {
 	function renderPage() {
 		return (
 			<div className="h-full flex flex-col justify-items-center p-4 gap-4">
-				<div>
-					{renderNewBoardButton()}
-				</div>
-				<Divider className="w-full " />
+				{id === -1 || tipo === "Jugador" ? <></> : <>
+					<div>
+						{renderNewBoardButton()}
+					</div>
+					<Divider className="w-full " />
+				</>}
 				<div className="flex flex-wrap gap-4">
 					{renderBoards()}
 				</div>
