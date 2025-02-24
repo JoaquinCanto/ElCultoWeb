@@ -94,7 +94,7 @@ export default function Boards() {
 					renderPage()
 					:
 					<>
-						<div className="flex flex-col gap-3">
+						<div className="flex flex-col gap-3 p-4">
 							<Card className="w-[200px] space-y-5 p-4" radius="lg">
 								<Skeleton className="rounded-lg" >
 									<div className="h-24 rounded-lg bg-secondary" />
