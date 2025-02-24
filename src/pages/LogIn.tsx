@@ -165,8 +165,12 @@ export default function LogIn() {
 								<Button color="danger" variant="light" onPress={onClose}>
 									Cerrar
 								</Button>
-								<Button color="success" as={Link} href={PublicRoutes.REGISTRARSE}>
-									Ingresar
+								<Button
+									color="success"
+									as={Link} href={PublicRoutes.REGISTRARSE}
+									showAnchorIcon
+								>
+									Registrarse
 								</Button>
 							</ModalFooter>
 						</>
