@@ -41,7 +41,7 @@ export default function ModalGameActions({
 
 	function renderModalAdd() {
 		return (
-			<div>
+			<div className="flex flex-col items-center gap-4">
 				<Input
 					isRequired
 					isClearable
