@@ -61,8 +61,12 @@ export default function Register() {
 	};
 
 	return (
-		<>
-			<Form validationBehavior="native" onSubmit={onSubmit} className='h-full p-4 flex flex-wrap gap-4'>
+		<div className="flex flex-col items-center p-4 gap-3 ">
+			<p className="font-bold text-2xl">Registrate</p>
+			<Form
+				validationBehavior="native"
+				onSubmit={onSubmit}
+				className='h-full flex items-center gap-4'>
 				<Input
 					isRequired
 					isClearable
@@ -124,7 +128,7 @@ export default function Register() {
 
 				<div>
 					<Input
-						className="max-w-xs"
+
 						isRequired
 						label="Contrasena"
 						labelPlacement="outside"
@@ -187,13 +191,14 @@ export default function Register() {
 				/> */}
 
 				<Button
+					className="w-32"
 					type="submit"
 					color="primary"
 					variant="ghost">
 					¡Registrarse!
 				</Button>
 			</Form>
-			<div>
+			<div className="flex flex-col items-center gap-4">
 				<p>
 					¿Ya tienes cuenta?
 				</p>
@@ -237,6 +242,6 @@ export default function Register() {
 					)}
 				</ModalContent>
 			</Modal>
-		</>
+		</div>
 	)
 }

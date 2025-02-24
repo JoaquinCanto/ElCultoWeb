@@ -11,7 +11,7 @@ export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const location = useLocation();
 	// const isQuienesSomosActive = location.pathname === PublicRoutes.QUIENES_SOMOS;
-	const isMesasActive = location.pathname === PublicRoutes.MESAS;
+	const isMesasActive = location.pathname === PublicRoutes.MESAS || location.pathname === PublicRoutes.HOME;
 
 	const menuItems = [
 		'¿Quiénes somos?',
@@ -91,16 +91,14 @@ export default function Header() {
 									<p className='font-semibold'>{apodo}</p>
 								</>}
 						</DropdownItem>
-						{(tipo === 'Administrador') ?
-							<>
-								<DropdownItem key='administration' href={PrivateRoutes.ADMINISTRACION}>Panel de Administacion</DropdownItem>
-								<DropdownItem key='reportes' href={PrivateRoutes.REPORTES}>Reportes</DropdownItem>
-							</>
-							: <></>}
+						{(tipo === 'Administrador' && id !== -1) ?
+							<DropdownItem key='administration' href={PrivateRoutes.ADMINISTRACION}>Panel de Administacion</DropdownItem> : <></>}
+						{(tipo !== 'Jugador' && id !== -1) ?
+							<DropdownItem key='reportes' href={PrivateRoutes.REPORTES}>Reportes</DropdownItem> : <></>}
 						{/* <DropdownItem key='team_settings'>Team Settings</DropdownItem> */}
 						<DropdownItem key='myBoards' href={PrivateRoutes.MISMESAS}>Mis Mesas</DropdownItem>
 						{(id !== -1) ? <DropdownItem key='myProfile' href={PrivateRoutes.MIPERFIL}>Mi Perfil</DropdownItem> : <></>}
-						<DropdownItem key='system'>System</DropdownItem>
+
 						{apodo === '' ?
 							<>
 								<DropdownItem key='register' color='primary' href={PublicRoutes.REGISTRARSE}>Registrate</DropdownItem>

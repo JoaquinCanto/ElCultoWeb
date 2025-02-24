@@ -33,7 +33,7 @@ const BoardsDetails = () => {
 			cupoMin: mesaData.cupoMin,
 			cupoMax: mesaData.cupoMax,
 			notas: mesaData.notas,
-			jugadores: mesaData.jugadores,
+			jugadores: mesaData.jugadores.map((jugador: any) => jugador.jugador.apodo),
 			publica: mesaData.publica,
 			codigo: mesaData.codigo,
 			fechaCreacion: mesaData.fechaCreacion

@@ -122,7 +122,9 @@ export default function Game({ board }: GameProps) {
 		}
 		if (isInscribed) {
 			return (
-				<Button color='primary'
+				<Button
+					className='w-32 text-xs'
+					color='primary'
 					variant='ghost'
 					startContent={<FaMinus />}
 					isDisabled={cancelInscriptionMutation.isPending}
@@ -134,13 +136,15 @@ export default function Game({ board }: GameProps) {
 		}
 		if (!isInscribed) {
 			return (
-				<Button color='primary'
+				<Button
+					className='w-32'
+					color='primary'
 					variant='ghost'
 					startContent={<FaPlus />}
 					isDisabled={createInscriptionMutation.isPending}
 					onPress={inscription}
 				>
-					Unirse
+					Anotarse
 				</Button>
 			)
 		}
@@ -168,7 +172,9 @@ export default function Game({ board }: GameProps) {
 
 				<Divider />
 
-				<CardFooter>
+				<CardFooter
+					className='flex flex-row items-center justify-around'
+				>
 					<Progress className='w-1/2 flex flex-col'
 						size='md'
 						color='secondary'
@@ -202,11 +208,11 @@ export default function Game({ board }: GameProps) {
 								</p>
 							</ModalBody>
 							<ModalFooter>
-								<Button color="danger" variant="light" onPress={onClose}>
+								<Button color="default" variant="ghost" onPress={onClose}>
 									Cerrar
 								</Button>
 								<Button
-									color="success"
+									color="danger"
 									onPress={cancelBoard}
 									isDisabled={cancelBoardMutation.isPending}
 								>

@@ -53,6 +53,7 @@ export default function LogIn() {
 
 			if (error) {
 				onOpen(); // show error modal if sign-in failed
+				localStorage.clear();
 				return;
 			}
 
@@ -69,11 +70,12 @@ export default function LogIn() {
 	};
 
 	return (
-		<>
+		<div className="flex flex-col items-center gap-4 p-4">
+			<p className="font-bold text-2xl" >Iniciar Sesion</p>
 			<Form
 				validationBehavior="native"
 				onSubmit={onSubmit}
-				className='h-full p-4 flex flex-wrap gap-4'
+				className="flex items-center gap-4 w-full max-w-sm"
 			>
 				<Input
 					isRequired
@@ -91,7 +93,6 @@ export default function LogIn() {
 				/>
 
 				<Input
-					className="max-w-xs"
 					isRequired
 					label="Contrasena"
 					labelPlacement="outside"
@@ -119,11 +120,15 @@ export default function LogIn() {
 					}
 				/>
 
-				<Button type="submit" color="primary" variant="ghost">
+				<Button
+					className="w-32"
+					type="submit"
+					color="primary"
+					variant="ghost">
 					Ingresar
 				</Button>
 			</Form>
-			<div>
+			<div className="flex flex-col items-center gap-4">
 				<p>
 					¿No tienes cuenta?
 				</p>
@@ -168,6 +173,6 @@ export default function LogIn() {
 					)}
 				</ModalContent>
 			</Modal>
-		</>
+		</div>
 	)
 }

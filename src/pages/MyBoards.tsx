@@ -79,8 +79,8 @@ export default function MyBoards() {
 
 
 		return (
-			<div>
-				<p>Mesas Como Narrador</p>
+			<div className="flex flex-col gap-4">
+				<p className='font-bold text-lg'>Mesas Como Narrador</p>
 				<DisplayTable
 					pages={pagesNarrator}
 					columns={columnsNarrator}
@@ -89,14 +89,14 @@ export default function MyBoards() {
 				/>
 
 				<Divider />
-				<p>Mesas como Jugador</p>
+				<p className='font-bold text-lg'>Mesas como Jugador</p>
 
 			</div>)
 	}
 
 	return (
-		<>
-			<p>Mis Mesas</p>
+		<div className="flex flex-col gap-4 p-4">
+			<p className='font-bold text-2xl'>Mis Mesas</p>
 			{tipo !== "Jugador" &&
 				renderTableNarrador()
 			}
@@ -106,6 +106,6 @@ export default function MyBoards() {
 				data={dataPlayer}
 				actionType="player"
 			/>
-		</>
+		</div>
 	)
 }

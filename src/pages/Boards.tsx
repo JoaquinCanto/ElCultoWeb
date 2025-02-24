@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Game from "../components/Game";
-import { FaPlus } from "react-icons/fa6";
+import { FaRegLightbulb } from "react-icons/fa6";
 import { BoardGet } from "../types/board";
 import { useOpenBoards } from "../services/queries";
 import usePersonStore from "../stores/personStore";
 import ModalBoardData from "../components/ModalBoardData";
 import { Button, Card, Skeleton, Divider } from "@heroui/react";
 import ModalSuggestion from "../components/modals/ModalSuggestion";
+import { MdTableRestaurant } from "react-icons/md";
 
 export default function Boards() {
 
@@ -37,12 +38,12 @@ export default function Boards() {
 	const renderNewBoardButton = () => {
 		if (tipo !== "Jugador") {
 			return (
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col items-center gap-2">
 					<Button
-						className="w-40"
+						className="flex w-40"
 						color='primary'
 						variant='ghost'
-						startContent={<FaPlus />}
+						startContent={<MdTableRestaurant />}
 						onPress={toggleModalNewBoard}
 					>
 						Agregar Mesa
@@ -54,12 +55,12 @@ export default function Boards() {
 
 	const renderSuggestionButton = () => {
 		return (
-			<div className="flex flex-col gap-2">
+			<div className="flex flex-col items-center gap-2">
 				<Button
-					className="w-40"
+					className="flex w-[170px]"
 					color='primary'
 					variant='ghost'
-					startContent={<FaPlus />}
+					startContent={<FaRegLightbulb />}
 					onPress={toggleModalSuggestion}
 				>
 					Nueva Sugerencia
@@ -70,7 +71,7 @@ export default function Boards() {
 
 	function renderPage() {
 		return (
-			<div className="h-full p-4 flex flex-col gap-2">
+			<div className="h-full flex flex-col justify-items-center p-4 gap-4">
 				<div>
 					{renderNewBoardButton()}
 				</div>
@@ -87,30 +88,31 @@ export default function Boards() {
 	}
 
 	return (
-		<div className='h-full p-4 flex flex-col gap-4'>
-			{!openBoardsQuery.isPending ?
-				renderPage()
-				:
-				<>
-					<div className="flex flex-col gap-3">
-						<Card className="w-[200px] space-y-5 p-4" radius="lg">
-							<Skeleton className="rounded-lg" >
-								<div className="h-24 rounded-lg bg-secondary" />
-							</Skeleton>
-							<div className="space-y-3">
-								<Skeleton className="w-3/5 rounded-lg" >
-									<div className="h-3 w-full rounded-lg bg-secondary" />
+		<div className='h-full flex flex-col gap-4'>
+			{
+				!openBoardsQuery.isPending ?
+					renderPage()
+					:
+					<>
+						<div className="flex flex-col gap-3">
+							<Card className="w-[200px] space-y-5 p-4" radius="lg">
+								<Skeleton className="rounded-lg" >
+									<div className="h-24 rounded-lg bg-secondary" />
 								</Skeleton>
-								<Skeleton className="w-4/5 rounded-lg" >
-									<div className="h-3 w-full rounded-lg bg-secondary-300" />
-								</Skeleton>
-								<Skeleton className="w-2/5 rounded-lg" >
-									<div className="h-3 w-full rounded-lg bg-secondary-200" />
-								</Skeleton>
-							</div>
-						</Card>
-					</div>
-				</>
+								<div className="space-y-3">
+									<Skeleton className="w-3/5 rounded-lg" >
+										<div className="h-3 w-full rounded-lg bg-secondary" />
+									</Skeleton>
+									<Skeleton className="w-4/5 rounded-lg" >
+										<div className="h-3 w-full rounded-lg bg-secondary-300" />
+									</Skeleton>
+									<Skeleton className="w-2/5 rounded-lg" >
+										<div className="h-3 w-full rounded-lg bg-secondary-200" />
+									</Skeleton>
+								</div>
+							</Card>
+						</div>
+					</>
 			}
 
 			<ModalBoardData
@@ -123,6 +125,6 @@ export default function Boards() {
 				onOpenChange={toggleModalSuggestion}
 			/>
 
-		</div>
+		</div >
 	)
 }

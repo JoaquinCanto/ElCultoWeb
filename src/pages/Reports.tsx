@@ -1,4 +1,4 @@
-import { Divider, Progress } from "@heroui/react";
+import { Card, CardBody, CardHeader, Divider, Progress } from "@heroui/react";
 import { useRelevantSuggestions, useTopGames } from "../services/queries";
 import { TopSuggestionsGet } from "../types/suggestion";
 import { TopGameGet } from "../types/game";
@@ -11,7 +11,9 @@ const Reports = () => {
 
 	const barGraphTopSuggested = () => {
 		return relevantSuggestionsQuery.data?.items.map((suggestionData: TopSuggestionsGet) => (
-			<div key={suggestionData.juego} className="flex flex-col gap-6 w-full max-w-md">
+			<div key={suggestionData.juego}
+				className="flex flex-col gap-6 w-full sm:max-w-80"
+			>
 				<Progress
 					label={suggestionData.juego}
 					value={suggestionData.cantidad}
@@ -26,7 +28,9 @@ const Reports = () => {
 
 	const barGraphTopPlayed = () => {
 		return topPlayedQuery.data?.items.map((playedData: TopGameGet) => (
-			<div key={playedData.nombre} className="flex flex-col gap-6 w-full max-w-md">
+			<div key={playedData.nombre}
+				className="flex flex-col gap-6 w-full sm:max-w-80"
+			>
 				<Progress
 					label={playedData.nombre}
 					value={playedData.cantidadInscripciones}
@@ -40,14 +44,29 @@ const Reports = () => {
 	}
 
 	return (
-		<div className="flex flex-col gap-4 p-4">
-			<p>Reports</p>
+		<div className="h-full flex flex-wrap justify-items-center p-4 gap-4">
+			<p className='font-bold text-2xl'
+			>Reportes</p>
 			<Divider />
-			<p>Top 10 Juegos más sugeridos:</p>
-			{barGraphTopSuggested()}
-			<Divider />
-			<p>Top 10 Juegos más jugados:</p>
-			{barGraphTopPlayed()}
+			<Card className='w-full sm:max-w-80'>
+				<CardHeader >
+					<p>Top 10 Juegos más sugeridos:</p>
+				</CardHeader>
+				<Divider />
+				<CardBody>
+					{barGraphTopSuggested()}
+				</CardBody>
+			</Card>
+			{/* <Divider /> */}
+			<Card className='w-full sm:max-w-80'>
+				<CardHeader className='font-bold'>
+					<p>Top 10 Juegos más jugados:</p>
+				</CardHeader>
+				<Divider />
+				<CardBody>
+					{barGraphTopPlayed()}
+				</CardBody>
+			</Card>
 		</div>
 	)
 }

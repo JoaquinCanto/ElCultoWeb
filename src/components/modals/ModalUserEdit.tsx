@@ -1,4 +1,4 @@
-import { Alert, Button, Checkbox, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
+import { Alert, Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch } from "@heroui/react";
 import { useUpdatePerson } from "../../services/mutations";
 import { PersonGet } from "../../types/person";
 import { useEffect, useState } from "react";
@@ -66,10 +66,10 @@ const ModalUserEdit = (props: propTypes) => {
 					<>
 						<ModalHeader className="flex flex-col gap-1">Agregar Nueva Mesa</ModalHeader>
 						<ModalBody>
-							<div className="flex flex-col gap-4">
+							<div className="flex flex-col gap-5">
 
 								<Input
-									className="max-w-xs"
+									className="w-full"
 									isRequired
 									label="Nombre"
 									labelPlacement="outside"
@@ -81,8 +81,8 @@ const ModalUserEdit = (props: propTypes) => {
 								/>
 
 								<Input
-									className="max-w-xs"
 									isRequired
+									className="w-full"
 									label="Apodo"
 									labelPlacement="outside"
 									placeholder={props.personData.apodo}
@@ -94,11 +94,12 @@ const ModalUserEdit = (props: propTypes) => {
 
 								<DatePicker
 									isRequired
-									className="max-w-[284px]"
+									className="w-full"
 									showMonthAndYearPickers
 									maxValue={today(getLocalTimeZone())}
 									label="Fecha de Nacimiento"
 									labelPlacement="outside"
+									variant="bordered"
 									placeholderValue={parseDate(props.personData.fechaNacimiento.slice(0, 10))}
 									value={fechaNacimiento}
 									onChange={(newDate) => newDate && setFechaNacimiento(newDate)}
@@ -109,15 +110,14 @@ const ModalUserEdit = (props: propTypes) => {
 									}}
 								/>
 
-								<Checkbox
-									size="lg"
-									radius="md"
+								<Switch
+									size="sm"
 									defaultSelected={props.personData.quiereNarrar}
 									isSelected={quiereNarrar}
 									onValueChange={setQuiereNarrar}
 								>
 									¿Quieres ser Narrador?
-								</Checkbox>
+								</Switch>
 
 							</div>
 						</ModalBody>

@@ -19,9 +19,9 @@ const MyProfile = () => {
 		if (!personData) return null;
 
 		return (
-			<div className="flex flex-col gap-4">
+			<div className="flex flex-col w-full items-center gap-4">
 				<Input
-					className="max-w-xs"
+					className="max-w-sm"
 					isReadOnly
 					label="Nombre"
 					labelPlacement="outside"
@@ -31,7 +31,7 @@ const MyProfile = () => {
 				/>
 
 				<Input
-					className="max-w-xs"
+					className="max-w-sm"
 					isReadOnly
 					label="Apodo"
 					labelPlacement="outside"
@@ -42,14 +42,15 @@ const MyProfile = () => {
 
 				<DatePicker
 					isReadOnly
-					className="max-w-[284px]"
+					className="max-w-sm"
 					label="Fecha de Nacimiento"
 					labelPlacement="outside"
 					value={parseDate(personData.fechaNacimiento.slice(0, 10))}
+					variant="bordered"
 				/>
 
 				<Input
-					className="max-w-xs"
+					className="max-w-sm"
 					isReadOnly
 					label="Email"
 					labelPlacement="outside"
@@ -59,7 +60,7 @@ const MyProfile = () => {
 				/>
 
 				<Input
-					className="max-w-xs"
+					className="max-w-sm"
 					isReadOnly
 					label="Tipo"
 					labelPlacement="outside"
@@ -69,7 +70,7 @@ const MyProfile = () => {
 				/>
 
 				<Input
-					className="max-w-xs"
+					className="max-w-sm"
 					isReadOnly
 					label="Estado"
 					labelPlacement="outside"
@@ -89,33 +90,40 @@ const MyProfile = () => {
 				{personData.inhabilitadoHasta ?
 					<DatePicker
 						isReadOnly
-						className="max-w-[284px]"
+						className="max-w-sm"
 						label="Estas Inhabilitado Hasta"
 						labelPlacement="outside"
 						value={parseDate(personData.inhabilitadoHasta.slice(0, 10))}
+						variant="bordered"
 					/>
 					: <></>
 				}
+
 			</div>
 		)
 	}
 
 
 	return (
-		<div className="flex flex-row p-4 gap-3">
-			{renderProfile()}
-			<div className="mt-6">
-				<Tooltip content="Editar">
-					<Button
-						isIconOnly
-						color="primary"
-						variant="ghost"
-						onPress={toggleModalUserEdit}
-					>
-						<EditIcon />
-					</Button>
-				</Tooltip>
+		<div className="flex flex-col items-center p-4 gap-3">
+			<div className="flex flex-row justify-between items-center gap-4 w-full max-w-sm">
+				<p className='font-bold text-2xl'>
+					Mi Perfil
+				</p>
+				<div className="">
+					<Tooltip content="Editar">
+						<Button
+							isIconOnly
+							color="primary"
+							variant="ghost"
+							onPress={toggleModalUserEdit}
+						>
+							<EditIcon />
+						</Button>
+					</Tooltip>
+				</div>
 			</div>
+			{renderProfile()}
 
 			{!personByIdQuery.isPending &&
 				<ModalUserEdit
