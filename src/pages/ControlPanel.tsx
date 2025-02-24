@@ -55,11 +55,31 @@ const ControlPanel = () => {
 		<div className="flex flex-col gap-4 p-4">
 			<div className="flex flex-row justify-center gap-4">
 				<ButtonGroup variant="ghost">
-					<Button onPress={() => setActiveView("boards")}>Mesas</Button>
-					<Button onPress={() => setActiveView("users")}>Usuarios</Button>
-					<Button onPress={() => setActiveView("inscriptions")}>Inscripciones</Button>
-					<Button onPress={() => setActiveView("games")}>Juegos</Button>
-					<Button onPress={() => setActiveView("places")}>Lugares</Button>
+					<Button
+						onPress={() => setActiveView("boards")}
+						color={activeView === "boards" ? "primary" : "default"}
+					>
+						Mesas</Button>
+					<Button
+						onPress={() => setActiveView("users")}
+						color={activeView === "users" ? "primary" : "default"}
+					>
+						Usuarios</Button>
+					<Button
+						onPress={() => setActiveView("inscriptions")}
+						color={activeView === "inscriptions" ? "primary" : "default"}
+					>
+						Inscripciones</Button>
+					<Button
+						onPress={() => setActiveView("games")}
+						color={activeView === "games" ? "primary" : "default"}
+					>
+						Juegos</Button>
+					<Button
+						onPress={() => setActiveView("places")}
+						color={activeView === "places" ? "primary" : "default"}
+					>
+						Lugares</Button>
 				</ButtonGroup>
 
 				{activeView === "games" &&
