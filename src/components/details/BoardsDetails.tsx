@@ -13,7 +13,7 @@ const BoardsDetails = () => {
 		{ key: "cupoMax", label: "Cupo Máximo" },
 		{ key: "notas", label: "Notas" },
 		{ key: "jugadores", label: "Jugadores" },
-		{ key: "publica", label: "Mesa Publica?" },
+		{ key: "publica", label: "¿Mesa Publica?" },
 		{ key: "codigo", label: "Código" },
 		{ key: "fechaCreacion", label: "Fecha Creacion", },
 		{ key: "acciones", label: "Acciones" }
@@ -27,16 +27,16 @@ const BoardsDetails = () => {
 			mesa: mesaData.idMesa,
 			juego: mesaData.juego.nombre,
 			narrador: mesaData.narrador.apodo,
-			fecha: mesaData.fechaHora,
+			fecha: new Date(mesaData.fechaHora).toLocaleString().slice(0, 17).concat(" hs."),
 			lugar: `${mesaData.lugar.nombre} - ${mesaData.lugar.direccion}`,
 			estado: mesaData.estado,
 			cupoMin: mesaData.cupoMin,
 			cupoMax: mesaData.cupoMax,
 			notas: mesaData.notas,
 			jugadores: mesaData.jugadores.map((jugador: any) => jugador.jugador.apodo),
-			publica: mesaData.publica,
-			codigo: mesaData.codigo,
-			fechaCreacion: mesaData.fechaCreacion
+			publica: mesaData.publica === true ? "Si" : "No",
+			codigo: mesaData.codigo === null ? "Sin Código" : mesaData.codigo,
+			fechaCreacion: new Date(mesaData.fechaCreacion).toLocaleString()
 		}
 	)) ?? [];
 

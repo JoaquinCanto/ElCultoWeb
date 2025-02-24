@@ -40,11 +40,11 @@ export default function MyBoards() {
 			mesa: inscriptionData.idMesa,
 			juego: inscriptionData.mesa.juego.nombre,
 			narrador: inscriptionData.mesa.narrador.apodo,
-			fecha: inscriptionData.mesa.fechaHora,
+			fecha: new Date(inscriptionData.mesa.fechaHora).toLocaleString().slice(0, 17).concat(" hs."),
 			lugar: `${inscriptionData.mesa.lugar.nombre} - ${inscriptionData.mesa.lugar.direccion}`,
 			estado: inscriptionData.mesa.estado,
 			asistencia: inscriptionData.asistencia === null ? checkAsistencia(inscriptionData.mesa.fechaHora) : inscriptionData.asistencia,
-			inscripto: inscriptionData.fechaInscripcion
+			inscripto: new Date(inscriptionData.fechaInscripcion).toLocaleString()
 		}
 	)) ?? [];
 
@@ -68,10 +68,10 @@ export default function MyBoards() {
 				key: mesaData.idMesa,
 				mesa: mesaData.idMesa,
 				juego: mesaData.juego.nombre,
-				fecha: mesaData.fechaHora,
+				fecha: new Date(mesaData.fechaHora).toLocaleString().slice(0, 17).concat(" hs."),
 				lugar: `${mesaData.lugar.nombre} - ${mesaData.lugar.direccion}`,
 				estado: mesaData.estado,
-				fechaCreacion: mesaData.fechaCreacion
+				fechaCreacion: new Date(mesaData.fechaCreacion).toLocaleString()
 			}
 		)) ?? [];
 

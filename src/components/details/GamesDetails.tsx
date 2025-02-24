@@ -7,7 +7,7 @@ const GamesDetails = () => {
 		{ key: "agregado", label: "Agregado" },
 		{ key: "nombre", label: "Nombre" },
 		{ key: "descripcion", label: "Descripción" },
-		{ key: "habilitado", label: "Habilitado" },
+		{ key: "habilitadoString", label: "Habilitado" },
 		{ key: "fechaBaja", label: "Fecha de Baja" },
 		{ key: "acciones", label: "Acciones" }
 	]
@@ -21,7 +21,8 @@ const GamesDetails = () => {
 			nombre: gameData.nombre,
 			descripcion: gameData.descripcion,
 			habilitado: gameData.estado,
-			fechaBaja: gameData.fechaBaja
+			habilitadoString: gameData.estado === true ? "Si" : "No",
+			fechaBaja: gameData.fechaBaja === null ? "-" : new Date(gameData.fechaBaja!).toLocaleString()
 		}
 	)) ?? [];
 

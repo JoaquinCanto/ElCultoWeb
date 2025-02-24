@@ -8,7 +8,7 @@ const PlacesDetails = () => {
 		{ key: "agregado", label: "Agregado" },
 		{ key: "nombre", label: "Nombre" },
 		{ key: "direccion", label: "Dirección" },
-		{ key: "habilitado", label: "Habilitado" },
+		{ key: "habilitadoString", label: "Habilitado" },
 		{ key: "fechaBaja", label: "Fecha de Baja" },
 		{ key: "acciones", label: "Acciones" }
 	]
@@ -22,7 +22,8 @@ const PlacesDetails = () => {
 			nombre: placeData.nombre,
 			direccion: placeData.direccion,
 			habilitado: placeData.estado,
-			fechaBaja: placeData.fechaBaja,
+			habilitadoString: placeData.estado === true ? "Si" : "No",
+			fechaBaja: placeData.fechaBaja === null ? "-" : new Date(placeData.fechaBaja!).toLocaleString(),
 		}
 	)) ?? [];
 

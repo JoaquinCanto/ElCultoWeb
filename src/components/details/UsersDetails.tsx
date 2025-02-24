@@ -25,14 +25,14 @@ const UsersDetails = () => {
 			key: userData.idPersona,
 			nombre: userData.nombre,
 			apodo: userData.apodo,
-			fechaNacimiento: userData.fechaNacimiento,
+			fechaNacimiento: new Date(userData.fechaNacimiento).toLocaleString().slice(0, 10),
 			email: userData.email,
 			tipo: userData.tipo,
 			estado: userData.estado,
-			quiereNarrar: userData.quiereNarrar,
-			fechaAlta: userData.fechaAlta,
-			inhabilitadoHasta: userData.inhabilitadoHasta,
-			fechaBaja: userData.fechaBaja
+			quiereNarrar: userData.quiereNarrar === true ? "Si" : "No",
+			fechaAlta: new Date(userData.fechaAlta).toLocaleString(),
+			inhabilitadoHasta: userData.inhabilitadoHasta === null ? "-" : new Date(userData.inhabilitadoHasta!).toLocaleString(),
+			fechaBaja: userData.fechaBaja === null ? "-" : new Date(userData.fechaBaja!).toLocaleString()
 		}
 	)) ?? [];
 

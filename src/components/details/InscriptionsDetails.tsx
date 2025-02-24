@@ -22,10 +22,10 @@ const InscriptionsDetails = () => {
 			mesa: inscripcionData.idMesa,
 			juego: inscripcionData.mesa.juego.nombre,
 			narrador: inscripcionData.mesa.narrador.apodo,
-			fechaMesa: inscripcionData.mesa.fechaHora,
+			fechaMesa: new Date(inscripcionData.mesa.fechaHora).toLocaleString().slice(0, 17).concat(" hs."),
 			jugador: inscripcionData.jugador.apodo,
-			fechaInscripcion: inscripcionData.fechaInscripcion,
-			estado: inscripcionData.baja.toString(),
+			fechaInscripcion: new Date(inscripcionData.fechaInscripcion).toLocaleString(),
+			estado: inscripcionData.baja === true ? "Cancelada" : "Activa",
 		}
 	)) ?? [];
 
