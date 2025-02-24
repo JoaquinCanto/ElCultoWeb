@@ -320,7 +320,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 							<EyeIcon />
 						</Button>
 					</Tooltip>
-					{item.estado === "false" &&
+					{item.estado === "Activa" &&
 						<Tooltip content="Cancelar Inscripcion" color="danger">
 							<Button
 								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
