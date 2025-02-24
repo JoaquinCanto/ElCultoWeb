@@ -5,17 +5,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { PrivateRoutes, PublicRoutes } from '../models/Routes';
 import usePersonStore from "../stores/personStore";
 import { supabase } from "../helpers/supabaseClient";
-// import { useShallow } from 'zustand/shallow'
 
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const location = useLocation();
-	// const isQuienesSomosActive = location.pathname === PublicRoutes.QUIENES_SOMOS;
 	const isMesasActive = location.pathname === PublicRoutes.MESAS || location.pathname === PublicRoutes.HOME;
+	const isNosotrosActive = location.pathname === PublicRoutes.NOSOTROS;
+	const isEventosActive = location.pathname === PublicRoutes.EVENTOS;
+	const isFAQActive = location.pathname === PublicRoutes.FAQ;
 
 	const menuItems = [
-		'¿Quiénes somos?',
 		'Mesas',
+		'¿Quiénes somos?',
 		'Proximos Eventos',
 		'F.A.Q.',
 	];
@@ -28,7 +29,13 @@ export default function Header() {
 		console.log(error);
 		updateApodo("");
 		usePersonStore.persist.clearStorage();
-		navigate(PublicRoutes.MESAS);
+		localStorage.removeItem("person-store");
+
+		if (location.pathname === PublicRoutes.MESAS) {
+			window.location.reload();
+		} else {
+			navigate(PublicRoutes.MESAS);
+		}
 	}
 
 	return (
@@ -48,23 +55,23 @@ export default function Header() {
 
 			<NavbarContent className='hidden md:flex gap-4' justify='center'>
 				<NavbarItem>
-					<Link color='foreground' href='#'>
-						{/* <Link as={Link} href={PublicRoutes.QUIENES_SOMOS} color={isQuienesSomosActive ? 'primary' : 'foreground'} className={isQuienesSomosActive ? 'font-bold' : 'font-normal'}> */}
+					<Link as={Link} href={PublicRoutes.MESAS} color={isMesasActive ? 'primary' : 'foreground'} className={isMesasActive ? 'font-bold' : 'font-normal'}>
+						Mesas
+					</Link>
+
+				</NavbarItem>
+				<NavbarItem>
+					<Link as={Link} href={PublicRoutes.NOSOTROS} color={isNosotrosActive ? 'primary' : 'foreground'} className={isNosotrosActive ? 'font-bold' : 'font-normal'}>
 						¿Quiénes somos?
 					</Link>
 				</NavbarItem>
 				<NavbarItem>
-					<Link as={Link} href={PublicRoutes.MESAS} color={isMesasActive ? 'primary' : 'foreground'} className={isMesasActive ? 'font-bold' : 'font-normal'}>
-						Mesas
-					</Link>
-				</NavbarItem>
-				<NavbarItem>
-					<Link color='foreground' href='#'>
+					<Link as={Link} href={PublicRoutes.EVENTOS} color={isEventosActive ? 'primary' : 'foreground'} className={isEventosActive ? 'font-bold' : 'font-normal'}>
 						Proximos Eventos
 					</Link>
 				</NavbarItem>
 				<NavbarItem>
-					<Link color='foreground' href='#'>
+					<Link as={Link} href={PublicRoutes.FAQ} color={isFAQActive ? 'primary' : 'foreground'} className={isFAQActive ? 'font-bold' : 'font-normal'}>
 						F.A.Q.
 					</Link>
 				</NavbarItem>
@@ -96,16 +103,15 @@ export default function Header() {
 						{(tipo !== 'Jugador' && id !== -1) ?
 							<DropdownItem key='reportes' href={PrivateRoutes.REPORTES}>Reportes</DropdownItem> : <></>}
 						{/* <DropdownItem key='team_settings'>Team Settings</DropdownItem> */}
-						<DropdownItem key='myBoards' href={PrivateRoutes.MISMESAS}>Mis Mesas</DropdownItem>
-						{(id !== -1) ? <DropdownItem key='myProfile' href={PrivateRoutes.MIPERFIL}>Mi Perfil</DropdownItem> : <></>}
+						{(id !== -1) ? <>
+							<DropdownItem key='myBoards' href={PrivateRoutes.MISMESAS}>Mis Mesas</DropdownItem>
+							<DropdownItem key='myProfile' href={PrivateRoutes.MIPERFIL}>Mi Perfil</DropdownItem>
+						</> : <></>}
+						{apodo === '' ? <>
+							<DropdownItem key='register' color='primary' href={PublicRoutes.REGISTRARSE}>Registrate</DropdownItem>
+							<DropdownItem key='login' color='success' href={PublicRoutes.INGRESAR}>Entrar</DropdownItem>
 
-						{apodo === '' ?
-							<>
-								<DropdownItem key='register' color='primary' href={PublicRoutes.REGISTRARSE}>Registrate</DropdownItem>
-								<DropdownItem key='login' color='success' href={PublicRoutes.INGRESAR}>Entrar</DropdownItem>
-
-							</>
-							:
+						</> :
 							<DropdownItem key='logout' color='danger' onPress={logOut}>Salir</DropdownItem>
 						}
 					</DropdownMenu>
@@ -116,9 +122,9 @@ export default function Header() {
 				{menuItems.map((item, index) => (
 					<NavbarMenuItem key={`${item}-${index}`}>
 						<Link
-							// color={(item === '¿Quiénes somos?' && isMM1Active) ? 'primary' : (item === 'Mesas' && isMesasActive) ? 'primary' : (item === 'Proximos Eventos' && isMM2Active) ? 'primary' : (item === 'F.A.Q.' && isMG1Active) ? 'primary' : 'foreground'}
+							color={(item === 'Mesas' && isMesasActive) ? 'primary' : (item === '¿Quiénes somos?' && isNosotrosActive) ? 'primary' : (item === 'Proximos Eventos' && isEventosActive) ? 'primary' : (item === 'F.A.Q.' && isFAQActive) ? 'primary' : 'foreground'}
 							className='w-full'
-							// href={item === '¿Quiénes somos?' ? PublicRoutes.MM1 : item === 'Mesas' ? PublicRoutes.MM1N : item === 'Proximos Eventos' ? PublicRoutes.MM2 : PublicRoutes.MG1}
+							href={item === 'Mesas' ? PublicRoutes.MESAS : item === '¿Quiénes somos?' ? PublicRoutes.NOSOTROS : item === 'Proximos Eventos' ? PublicRoutes.EVENTOS : PublicRoutes.FAQ}
 							size='lg'
 						>
 							{item}
