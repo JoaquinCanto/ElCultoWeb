@@ -6,8 +6,8 @@ import InscriptionsDetails from "../components/details/InscriptionsDetails";
 import GamesDetails from "../components/details/GamesDetails";
 import PlacesDetails from "../components/details/PlacesDetails";
 import ModalGameActions from "../components/modals/ModalGameActions";
-import { useCreateGame, useCreatePlace } from "../services/mutations";
 import ModalPlaceActions from "../components/modals/ModalPlaceActions";
+import { useCreateGame, useCreatePlace } from "../services/mutations";
 import { GiSpellBook } from "react-icons/gi";
 import { MdPlace } from "react-icons/md";
 

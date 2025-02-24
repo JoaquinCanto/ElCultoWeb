@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import usePersonStore from "../stores/personStore";
+import usePersonStore from "../../stores/personStore";
 import { CalendarDate, getLocalTimeZone, Time, today } from "@internationalized/date";
 import { Alert, Button, Checkbox, DatePicker, DateValue, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, Textarea, TimeInput, TimeInputValue } from "@heroui/react";
-import { ClockCircleLinearIcon } from "./Icons";
-import PassGenerator from "./PassGenerator";
-import { useCreateBoard, useUpdateBoard } from "../services/mutations";
-import { useAllowedGames, useOpenBoards, useAllowedPlaces } from "../services/queries";
-import { GameGet } from "../types/game";
-import { PlaceGet } from "../types/place";
-import { BoardGet } from "../types/board";
+import { ClockCircleLinearIcon } from "../Icons";
+import PassGenerator from "../PassGenerator";
+import { useCreateBoard, useUpdateBoard } from "../../services/mutations";
+import { useAllowedGames, useOpenBoards, useAllowedPlaces } from "../../services/queries";
+import { GameGet } from "../../types/game";
+import { PlaceGet } from "../../types/place";
+import { BoardGet } from "../../types/board";
 
 interface propTypes {
 	isOpen: boolean,

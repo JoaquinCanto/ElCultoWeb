@@ -4,7 +4,7 @@ import { FaRegLightbulb } from "react-icons/fa6";
 import { BoardGet } from "../types/board";
 import { useOpenBoards } from "../services/queries";
 import usePersonStore from "../stores/personStore";
-import ModalBoardData from "../components/ModalBoardData";
+import ModalBoardData from "../components/modals/ModalBoardData";
 import { Button, Card, Skeleton, Divider } from "@heroui/react";
 import ModalSuggestion from "../components/modals/ModalSuggestion";
 import { MdTableRestaurant } from "react-icons/md";

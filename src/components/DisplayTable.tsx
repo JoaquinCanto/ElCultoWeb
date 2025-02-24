@@ -6,7 +6,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import ModalUserActions from "./modals/ModalUserActions";
 import { useBanPerson, useCancelBoard, useCancelInscription, useUnbanPerson, useUnsubscribeGame, useUnsubscribePerson, useUnsubscribePlace, useUpdateGame, useUpdatePlace } from "../services/mutations";
 import { useBoard } from "../services/queries";
-import ModalBoardData from "./ModalBoardData";
+import ModalBoardData from "./modals/ModalBoardData";
 import ModalBoardActions from "./modals/ModalBoardActions";
 import ModalGameActions from "./modals/ModalGameActions";
 import ModalPlaceActions from "./modals/ModalPlaceActions";

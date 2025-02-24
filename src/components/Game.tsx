@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useCancelBoard, useCreateInscription, useCancelInscription } from '../services/mutations';
 import { DeleteIcon, EditIcon } from './Icons';
 import { BoardGet } from '../types/board';
-import ModalBoardData from './ModalBoardData';
+import ModalBoardData from './modals/ModalBoardData';
 
 interface GameProps {
 	board: BoardGet;
