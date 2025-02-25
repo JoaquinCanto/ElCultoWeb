@@ -77,10 +77,13 @@ export default function ModalBoardData(props: propTypes) {
 	useEffect(() => {
 
 		if (props.boardToEdit) {
+			const dateTime = new Date(props.boardToEdit.fechaHora).toLocaleString();
+			console.log(props.boardToEdit.fechaHora, " ", dateTime);
+
 			setJuegoValue(String(props.boardToEdit.idJuego));
-			const [year, month, day] = props.boardToEdit.fechaHora.split("T")[0].split("-").map(Number);
+			const [day, month, year] = dateTime.split(",")[0].split("/").map(Number);
 			setDate(new CalendarDate(year, month, day));
-			const [hour, minute] = props.boardToEdit.fechaHora.split("T")[1].split(":").map(Number);
+			const [hour, minute] = dateTime.split(",")[1].split(":").map(Number);
 			setTime(new Time(hour, minute));
 			setLugarValue(String(props.boardToEdit.idLugar));
 			setNotas(props.boardToEdit.notas);
