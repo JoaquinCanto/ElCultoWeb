@@ -64,7 +64,7 @@ const ModalUserEdit = (props: propTypes) => {
 			<ModalContent>
 				{(onClose) => (
 					<>
-						<ModalHeader className="flex flex-col gap-1">Agregar Nueva Mesa</ModalHeader>
+						<ModalHeader className="flex flex-col gap-1">Editar Datos Personales</ModalHeader>
 						<ModalBody>
 							<div className="flex flex-col gap-5">
 
