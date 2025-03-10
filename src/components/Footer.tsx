@@ -58,8 +58,9 @@ export default function Footer() {
 				<div>
 					{/* Todos Los Derechos Reservados © 2025 Canto Inc. */}
 					<Card>
-						<CardBody className="bg-yellow-100">
+						<CardBody className="bg-indigo-100">
 							<Image
+								// className="bg-blend-difference"
 								alt="InitiativeRoll_Logo"
 								src={irLogo}
 								width={150}
