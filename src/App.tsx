@@ -12,6 +12,8 @@ import ControlPanel from './pages/ControlPanel';
 import Reports from './pages/Reports';
 import MyProfile from './pages/MyProfile';
 import WeAre from './pages/WeAre';
+import Events from './pages/Events';
+import FAQ from './pages/FAQ';
 
 function App() {
 	return (
@@ -24,8 +26,8 @@ function App() {
 						<Route path={PublicRoutes.REGISTRARSE} element={<Register />} />
 						<Route path={PublicRoutes.INGRESAR} element={<LogIn />} />
 						<Route path={PublicRoutes.NOSOTROS} element={< WeAre />} />
-						<Route path={PublicRoutes.EVENTOS} element={< WeAre />} />
-						<Route path={PublicRoutes.FAQ} element={< WeAre />} />
+						<Route path={PublicRoutes.EVENTOS} element={< Events />} />
+						<Route path={PublicRoutes.FAQ} element={< FAQ />} />
 
 						<Route element={<AuthGuard />}>
 							<Route path={PrivateRoutes.MISMESAS} element={<MyBoards />} />
