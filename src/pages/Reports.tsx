@@ -49,7 +49,7 @@ const Reports = () => {
 			>Reportes</p>
 			<Divider />
 			<Card className='w-full sm:max-w-80'>
-				<CardHeader >
+				<CardHeader className='font-bold'>
 					<p>Top 10 Juegos más sugeridos:</p>
 				</CardHeader>
 				<Divider />

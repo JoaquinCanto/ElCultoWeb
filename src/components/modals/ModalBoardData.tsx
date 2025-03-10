@@ -78,8 +78,6 @@ export default function ModalBoardData(props: propTypes) {
 
 		if (props.boardToEdit) {
 			const dateTime = new Date(props.boardToEdit.fechaHora).toLocaleString();
-			console.log(props.boardToEdit.fechaHora, " ", dateTime);
-
 			setJuegoValue(String(props.boardToEdit.idJuego));
 			const [day, month, year] = dateTime.split(",")[0].split("/").map(Number);
 			setDate(new CalendarDate(year, month, day));
