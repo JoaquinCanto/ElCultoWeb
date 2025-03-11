@@ -31,7 +31,7 @@ const UsersDetails = () => {
 			estado: userData.estado,
 			quiereNarrar: userData.quiereNarrar === true ? "Si" : "No",
 			fechaAlta: new Date(userData.fechaAlta).toLocaleString(),
-			inhabilitadoHasta: userData.inhabilitadoHasta === null ? "-" : new Date(userData.inhabilitadoHasta!).toLocaleString(),
+			inhabilitadoHasta: userData.inhabilitadoHasta === null ? "-" : new Date(userData.inhabilitadoHasta!).toLocaleString().slice(0, 10),
 			fechaBaja: userData.fechaBaja === null ? "-" : new Date(userData.fechaBaja!).toLocaleString()
 		}
 	)) ?? [];

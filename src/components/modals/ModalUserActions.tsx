@@ -89,7 +89,7 @@ export default function ModalUserActions({
 							<Button
 								color="primary"
 								variant="solid"
-								onPress={type === "ban" ? () => { onConfirm((new Date(date as unknown as string)).toISOString()); onClose(); } : () => { onConfirm(); onClose(); }}
+								onPress={type === "ban" ? () => { onConfirm(new Date((new Date(date as unknown as string).getTime() + (3 * 60 * 60 * 1000))).toISOString()); onClose(); } : () => { onConfirm(); onClose(); }}
 							>
 								Confirmar
 							</Button>
