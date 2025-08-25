@@ -1,7 +1,7 @@
 import { FaInstagram } from "react-icons/fa6";
 import { BiLogoDiscordAlt } from "react-icons/bi";
-import { Button, Card, CardBody, Image, Link, Tooltip } from "@heroui/react";
-import irLogo from "../assets/IR_Logo_v4.png";
+import { Button, Link, Tooltip } from "@heroui/react";
+
 
 export default function Footer() {
 	return (
@@ -51,22 +51,6 @@ export default function Footer() {
 							</Button>
 						</Link>
 					</Tooltip>
-				</div>
-
-
-
-				<div>
-					{/* Todos Los Derechos Reservados © 2025 Canto Inc. */}
-					<Card>
-						<CardBody className="bg-indigo-100">
-							<Image
-								// className="bg-blend-difference"
-								alt="InitiativeRoll_Logo"
-								src={irLogo}
-								width={150}
-							/>
-						</CardBody>
-					</Card>
 				</div>
 			</div>
 		</footer>
