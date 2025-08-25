@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PublicRoutes } from "../models/Routes";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router";
 import { supabase } from "../helpers/supabaseClient";
 
 export function AuthGuard() {

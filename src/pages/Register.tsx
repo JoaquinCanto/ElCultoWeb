@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { PublicRoutes } from "../models/Routes";
 import { supabase } from "../helpers/supabaseClient";
 import { getLocalTimeZone, today } from "@internationalized/date";

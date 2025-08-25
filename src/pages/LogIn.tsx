@@ -3,7 +3,7 @@ import { supabase } from "../helpers/supabaseClient";
 import { Button, Form, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../components/Icons";
 import { PublicRoutes } from "../models/Routes";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePersonByEmail } from "../services/queries";
 import { usePersonStoreFill } from "../stores/personStoreFill";

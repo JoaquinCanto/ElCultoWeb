@@ -1,7 +1,7 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar } from "@heroui/react";
 import criticat from '../assets/CriticatSinFondo.png';
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { PrivateRoutes, PublicRoutes } from '../models/Routes';
 import usePersonStore from "../stores/personStore";
 import { supabase } from "../helpers/supabaseClient";
