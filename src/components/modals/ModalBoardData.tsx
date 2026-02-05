@@ -228,7 +228,7 @@ export default function ModalBoardData(props: propTypes) {
 								//   defaultValue={new Time(11, 45)}
 								isRequired
 								endContent={
-									<ClockCircleLinearIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />
+									<ClockCircleLinearIcon className="text-xl text-default-400 pointer-events-none shrink-0" />
 								}
 								label="Hora de la Mesa: "
 								labelPlacement="outside"

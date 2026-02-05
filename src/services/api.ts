@@ -7,8 +7,8 @@ import { InscriptionPost, InscriptionResponse } from "../types/inscription";
 import { SuggestionPost, SuggestionResponse, TopSuggestionResponse } from "../types/suggestion";
 import { supabase } from "../helpers/supabaseClient";
 
-const BASE_URL = "http://localhost:10000";
-// const BASE_URL = "https://elcultoback.onrender.com";
+// const BASE_URL = "http://localhost:10000";
+const BASE_URL = "https://elcultoback.onrender.com";
 
 const axiosInstance = axios.create({ baseURL: BASE_URL });
 const { data: { session } } = await supabase.auth.getSession();

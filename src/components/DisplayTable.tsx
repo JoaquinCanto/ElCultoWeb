@@ -4,7 +4,17 @@ import { EyeIcon, EditIcon, DeleteIcon } from "../components/Icons";
 import { LuTimer, LuTimerOff } from "react-icons/lu";
 import { MdOutlineCancel } from "react-icons/md";
 import ModalUserActions from "./modals/ModalUserActions";
-import { useBanPerson, useCancelBoard, useCancelInscription, useUnbanPerson, useUnsubscribeGame, useUnsubscribePerson, useUnsubscribePlace, useUpdateGame, useUpdatePlace } from "../services/mutations";
+import {
+	useBanPerson,
+	useCancelBoard,
+	useCancelInscription,
+	useUnbanPerson,
+	useUnsubscribeGame,
+	useUnsubscribePerson,
+	useUnsubscribePlace,
+	useUpdateGame,
+	useUpdatePlace,
+} from "../services/mutations";
 import { useBoard } from "../services/queries";
 import ModalBoardData from "./modals/ModalBoardData";
 import ModalBoardActions from "./modals/ModalBoardActions";
@@ -24,11 +34,12 @@ interface DisplayTableProps<T> {
 	actionType: "player" | "narrator" | "admin" | "board" | "user" | "inscription" | "game" | "place";
 }
 
-export default function DisplayTable<T extends { key: number, mesa?: number, estado?: string, habilitado?: boolean }>({ // 
+export default function DisplayTable<T extends { key: number; mesa?: number; estado?: string; habilitado?: boolean }>({
+	//
 	pages,
 	columns,
 	data,
-	actionType
+	actionType,
 }: DisplayTableProps<T>) {
 	const [page, setPage] = useState(1);
 	const rowsPerPage = 10;
@@ -132,7 +143,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 						const data = {
 							nombre: arg1!,
 							descripcion: arg2!,
-						}
+						};
 						updateGameMutation.mutate({ gameId: selectedItem.key, data: data });
 						break;
 					case "unsubscribe":
@@ -146,7 +157,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 						const data = {
 							nombre: arg1!,
 							direccion: arg2!,
-						}
+						};
 						updatePlaceMutation.mutate({ placeId: selectedItem.key, data: data });
 						break;
 					case "unsubscribe":
@@ -163,7 +174,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 				<div className="relative flex items-center gap-2">
 					<Tooltip content="Ver Mesa">
 						<Button
-							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0" //text-default-400
+							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0" //text-default-400
 							isIconOnly
 							color="primary"
 							variant="light"
@@ -174,7 +185,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 					</Tooltip>
 					<Tooltip content="Desinscribirse" color="danger">
 						<Button
-							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 							isIconOnly
 							color="danger"
 							variant="light"
@@ -185,13 +196,12 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 					</Tooltip>
 				</div>
 			);
-		}
-		else if (actionType === "narrator") {
+		} else if (actionType === "narrator") {
 			return (
 				<div className="relative flex items-center gap-2">
 					<Tooltip content="Ver Mesa">
 						<Button
-							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 							isIconOnly
 							color="primary"
 							variant="light"
@@ -200,11 +210,11 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 							<EyeIcon />
 						</Button>
 					</Tooltip>
-					{(item.estado === "Abierta" || item.estado === "Cerrada") &&
+					{(item.estado === "Abierta" || item.estado === "Cerrada") && (
 						<>
 							<Tooltip content="Editar Mesa">
 								<Button
-									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 									isIconOnly
 									color="primary"
 									variant="light"
@@ -216,7 +226,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 
 							<Tooltip content="Cancelar Mesa" color="danger">
 								<Button
-									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 									isIconOnly
 									color="danger"
 									variant="light"
@@ -226,17 +236,15 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								</Button>
 							</Tooltip>
 						</>
-					}
+					)}
 				</div>
 			);
-		}
-		else if (actionType === "board") {
+		} else if (actionType === "board") {
 			return (
-
 				<div className="relative flex items-center gap-2">
 					<Tooltip content="Ver Mesa">
 						<Button
-							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 							isIconOnly
 							color="primary"
 							variant="light"
@@ -245,10 +253,10 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 							<EyeIcon />
 						</Button>
 					</Tooltip>
-					{(item.estado === "Abierta" || item.estado === "Cerrada") &&
+					{(item.estado === "Abierta" || item.estado === "Cerrada") && (
 						<Tooltip content="Cancelar Mesa" color="danger">
 							<Button
-								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 								isIconOnly
 								color="danger"
 								variant="light"
@@ -257,17 +265,16 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								<DeleteIcon />
 							</Button>
 						</Tooltip>
-					}
+					)}
 				</div>
-			)
-		}
-		else if (actionType === "user") {
+			);
+		} else if (actionType === "user") {
 			return (
 				<div className="relative flex items-center gap-2">
-					{item.estado === 'Habilitado' &&
+					{item.estado === "Habilitado" && (
 						<Tooltip content="Inhabilitar" color="danger">
 							<Button
-								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 								isIconOnly
 								color="danger"
 								variant="light"
@@ -276,11 +283,11 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								<LuTimer />
 							</Button>
 						</Tooltip>
-					}
-					{item.estado === 'Inhabilitado' &&
+					)}
+					{item.estado === "Inhabilitado" && (
 						<Tooltip content="Rehabilitar" color="success">
 							<Button
-								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 								isIconOnly
 								color="success"
 								variant="light"
@@ -289,11 +296,11 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								<LuTimerOff />
 							</Button>
 						</Tooltip>
-					}
-					{item.estado !== 'DeBaja' &&
+					)}
+					{item.estado !== "DeBaja" && (
 						<Tooltip content="Dar de Baja" color="danger">
 							<Button
-								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 								isIconOnly
 								color="danger"
 								variant="light"
@@ -302,16 +309,15 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								<MdOutlineCancel />
 							</Button>
 						</Tooltip>
-					}
+					)}
 				</div>
-			)
-		}
-		else if (actionType === "inscription") {
+			);
+		} else if (actionType === "inscription") {
 			return (
 				<div className="relative flex items-center gap-2">
 					<Tooltip content="Ver Mesa">
 						<Button
-							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+							className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 							isIconOnly
 							color="primary"
 							variant="light"
@@ -320,10 +326,10 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 							<EyeIcon />
 						</Button>
 					</Tooltip>
-					{item.estado === "Activa" &&
+					{item.estado === "Activa" && (
 						<Tooltip content="Cancelar Inscripcion" color="danger">
 							<Button
-								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+								className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 								isIconOnly
 								color="danger"
 								variant="light"
@@ -332,18 +338,17 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								<MdOutlineCancel />
 							</Button>
 						</Tooltip>
-					}
+					)}
 				</div>
-			)
-		}
-		else if (actionType === "game") {
+			);
+		} else if (actionType === "game") {
 			return (
 				<>
-					{item.habilitado &&
+					{item.habilitado && (
 						<div className="relative flex items-center gap-2">
-							<Tooltip content="Editar" >
+							<Tooltip content="Editar">
 								<Button
-									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 									isIconOnly
 									color="primary"
 									variant="light"
@@ -354,7 +359,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 							</Tooltip>
 							<Tooltip content="Dar de Baja" color="danger">
 								<Button
-									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 									isIconOnly
 									color="danger"
 									variant="light"
@@ -364,18 +369,17 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								</Button>
 							</Tooltip>
 						</div>
-					}
+					)}
 				</>
-			)
-		}
-		else if (actionType === "place") {
+			);
+		} else if (actionType === "place") {
 			return (
 				<>
-					{item.habilitado &&
+					{item.habilitado && (
 						<div className="relative flex items-center gap-2">
-							<Tooltip content="Editar" >
+							<Tooltip content="Editar">
 								<Button
-									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 									isIconOnly
 									color="primary"
 									variant="light"
@@ -386,7 +390,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 							</Tooltip>
 							<Tooltip content="Dar de Baja" color="danger">
 								<Button
-									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded p-0 min-w-0"
+									className="text-lg cursor-pointer active:opacity-50 w-[18px] h-[18px] flex items-center justify-center bg-transparent rounded-sm p-0 min-w-0"
 									isIconOnly
 									color="danger"
 									variant="light"
@@ -396,9 +400,9 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 								</Button>
 							</Tooltip>
 						</div>
-					}
+					)}
 				</>
-			)
+			);
 		}
 		return null;
 	};
@@ -429,7 +433,11 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 				}}
 			>
 				<TableHeader columns={columns}>
-					{(column) => <TableColumn allowsSorting key={column.key}>{column.label}</TableColumn>}
+					{(column) => (
+						<TableColumn allowsSorting key={column.key}>
+							{column.label}
+						</TableColumn>
+					)}
 				</TableHeader>
 				<TableBody items={paginatedData}>
 					{(item) => (
@@ -450,10 +458,10 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 						modalAction === "view"
 							? "Mesa"
 							: modalAction === "unsubscribe"
-								? "Desinscribirse de la mesa:"
-								: modalAction === "edit"
-									? "Editar Mesa"
-									: "Cancelar Mesa"
+							? "Desinscribirse de la mesa:"
+							: modalAction === "edit"
+							? "Editar Mesa"
+							: "Cancelar Mesa"
 					}
 					type={modalAction}
 					boardId={selectedItem.mesa!}
@@ -505,11 +513,7 @@ export default function DisplayTable<T extends { key: number, mesa?: number, est
 			)}
 
 			{isBoardDataOpen && selectedItem && (
-				<ModalBoardData
-					isOpen={isBoardDataOpen}
-					onOpenChange={() => setIsBoardDataOpen(false)}
-					boardToEdit={boardQuery.data?.items}
-				/>
+				<ModalBoardData isOpen={isBoardDataOpen} onOpenChange={() => setIsBoardDataOpen(false)} boardToEdit={boardQuery.data?.items} />
 			)}
 		</>
 	);

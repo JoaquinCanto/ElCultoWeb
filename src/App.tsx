@@ -1,4 +1,4 @@
-import './App.css';
+import './index.css';
 import { PrivateRoutes, PublicRoutes } from './models/Routes';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { AuthGuard } from './guards/authGuard';
